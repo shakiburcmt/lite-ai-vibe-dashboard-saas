@@ -858,6 +858,7 @@ export default function ShopSmartUltimate() {
       });
     };
 
+    // Park the active cart so the cashier can resume it later without losing items
     const handleHoldOrder = () => {
       if (cart.length === 0) return;
       const holdId = `HLD-${Date.now().toString().slice(-6)}`;
@@ -875,6 +876,7 @@ export default function ShopSmartUltimate() {
       addNotification(`Order ${holdId} Parked`, "success");
     };
 
+    // Restore a previously held order back into the live cart; only allowed when empty
     const handleResumeOrder = (order) => {
       if (cart.length > 0)
         return addNotification("Clear current cart first", "warning");
@@ -885,6 +887,7 @@ export default function ShopSmartUltimate() {
       logAction("POS_RESUME", `Order ${order.id} resumed.`);
     };
 
+    // Finalize a sale: persist order, decrement stock, update customer stats, and reset the session
     const handleCheckout = (amountPaid = total) => {
       if (cart.length === 0) return;
       const orderId = `ORD-${Date.now().toString().slice(-6)}`;
