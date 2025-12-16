@@ -1,4 +1,6 @@
+// === ENTRY POINT: mark this file as a client-side React component for Next.js ===
 "use client";
+// === ICONS & CHART LIBRARIES (used across all views) ===
 import {
   AlertTriangle,
   BarChart3,
@@ -57,11 +59,14 @@ import {
 } from "recharts";
 
 /**
- * --- MOCK DATA & CONSTANTS ---
+ * === SECTION: MOCK DATA & APP-WIDE CONSTANTS (START) ===
+ * Purpose: central place for roles, themes, seed data, and chart demo data.
  */
 
+// Basic role identifiers used for access control and default views
 const ROLES = { ADMIN: "admin", MANAGER: "manager", CASHIER: "cashier" };
 
+// Tailwind class presets for light/dark "glass" style cards
 const THEMES = {
   LIGHT: "bg-slate-50 text-slate-900",
   DARK: "bg-slate-900 text-slate-100",
@@ -70,6 +75,7 @@ const THEMES = {
     "bg-slate-800/70 backdrop-blur-xl border-slate-700/50 shadow-xl text-white",
 };
 
+// Users you can quickly "log in" as (no real auth, just local simulation)
 const INITIAL_USERS = [
   {
     id: 1,
@@ -97,7 +103,7 @@ const INITIAL_USERS = [
   },
 ];
 
-// Enhanced mock data
+// Initial catalog of products used by POS, inventory, reports, etc.
 const INITIAL_PRODUCTS = [
   {
     id: 101,
@@ -111,6 +117,8 @@ const INITIAL_PRODUCTS = [
     profitMargin: 35.1,
     supplier: "Organic Farms Inc.",
     reorderPoint: 20,
+    image:
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: 102,
@@ -124,6 +132,8 @@ const INITIAL_PRODUCTS = [
     profitMargin: 40.0,
     supplier: "Home Decor Co.",
     reorderPoint: 15,
+    image:
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: 103,
@@ -137,6 +147,8 @@ const INITIAL_PRODUCTS = [
     profitMargin: 27.8,
     supplier: "Tech Solutions Ltd.",
     reorderPoint: 10,
+    image:
+      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: 104,
@@ -150,6 +162,8 @@ const INITIAL_PRODUCTS = [
     profitMargin: 38.5,
     supplier: "Local Bakery",
     reorderPoint: 25,
+    image:
+      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: 105,
@@ -163,6 +177,8 @@ const INITIAL_PRODUCTS = [
     profitMargin: 25.0,
     supplier: "Tech Solutions Ltd.",
     reorderPoint: 15,
+    image:
+      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80",
   },
   {
     id: 106,
@@ -176,9 +192,12 @@ const INITIAL_PRODUCTS = [
     profitMargin: 40.0,
     supplier: "Fitness Gear Inc.",
     reorderPoint: 10,
+    image:
+      "https://images.unsplash.com/photo-1599059813505-6cdaafbc2316?auto=format&fit=crop&w=400&q=80",
   },
 ];
 
+// Example customers used for CRM, loyalty, and AI insights
 const INITIAL_CUSTOMERS = [
   {
     id: 1,
@@ -230,7 +249,7 @@ const INITIAL_CUSTOMERS = [
   },
 ];
 
-// Enhanced sales data for different time periods
+// Fake sales series used to demonstrate the analytics dashboard
 const SALES_DATA_7DAYS = [
   { name: "Mon", sales: 4000, orders: 24, customers: 18 },
   { name: "Tue", sales: 3000, orders: 18, customers: 15 },
@@ -263,19 +282,28 @@ const SALES_DATA_12MONTHS = [
   { name: "Dec", sales: 150000, orders: 950, customers: 750 },
 ];
 
-const CATEGORY_SALES = [
-  { name: "Electronics", value: 35, color: "#8884d8" },
-  { name: "Beverages", value: 25, color: "#82ca9d" },
-  { name: "Home", value: 15, color: "#ffc658" },
-  { name: "Sports", value: 12, color: "#ff8042" },
-  { name: "Bakery", value: 8, color: "#0088fe" },
-  { name: "Fashion", value: 5, color: "#ff6b6b" },
-];
+// Base palette per category; used when we compute category distribution from live products
+const CATEGORY_COLORS = {
+  Electronics: "#8884d8",
+  Beverages: "#82ca9d",
+  Home: "#ffc658",
+  Sports: "#ff8042",
+  Bakery: "#0088fe",
+  Fashion: "#ff6b6b",
+  Groceries: "#22c55e",
+  Other: "#64748b",
+};
 
 /**
- * --- ENHANCED AI SERVICES ---
+ * === SECTION: MOCK DATA & APP-WIDE CONSTANTS (END) ===
  */
 
+/**
+ * === SECTION: ENHANCED AI SERVICES (START) ===
+ * Purpose: fake "AI" helpers that simulate latency and return smart-looking text.
+ */
+
+// Shared money formatter so all views show consistent currency strings
 const formatCurrency = (amount, currency = "$") =>
   `${currency}${amount.toFixed(2)}`;
 
@@ -284,17 +312,73 @@ class EnhancedAIService {
     await new Promise((r) => setTimeout(r, 800));
     const lowerName = productName.toLowerCase();
 
-    // Enhanced descriptions with more details
-    const descriptions = {
-      electronics: `Premium ${productName} featuring cutting-edge technology with energy-efficient design. Includes 2-year warranty and 24/7 customer support.`,
-      beverages: `Artisan ${productName} crafted from sustainably sourced ingredients. Ethically produced and packaged in eco-friendly materials.`,
-      home: `Handcrafted ${productName} combining modern design with traditional craftsmanship. Easy to clean and durable for everyday use.`,
-      sports: `Professional-grade ${productName} designed for optimal performance. Ergonomic design with anti-slip technology for safety.`,
-      bakery: `Freshly baked ${productName} using organic ingredients. No preservatives added, perfect for health-conscious consumers.`,
-      default: `High-quality ${productName} designed for durability and performance. Backed by our 100% satisfaction guarantee.`,
-    };
+    // Library of richer, human-friendly descriptions keyed by simple patterns
+    const productPatterns = [
+      {
+        match: /apple|banana|orange|mango|grape|fruit/,
+        text: `${productName} is part of our fresh fruit selection, sourced daily from trusted growers. It's perfect for quick snacks, healthy lunch boxes, or fresh-pressed juices. We carefully handle and store it to keep the natural sweetness, color, and nutrients at their best.`,
+      },
+      {
+        match: /milk|cheese|yogurt|dairy/,
+        text: `${productName} is a dairy staple designed for everyday use in breakfasts, baking, and cooking. It delivers a rich, creamy taste while meeting strict cold-chain and quality standards. Ideal for families looking for reliable freshness and consistent flavor in every serving.`,
+      },
+      {
+        match: /bread|bun|roll|baguette|toast/,
+        text: `${productName} is baked with carefully selected flour and a slow-rise process for better texture and flavor. The crust is golden and crisp, while the inside stays soft and airy. It pairs perfectly with spreads, soups, and sandwiches throughout the day.`,
+      },
+      {
+        match: /rice|pasta|noodle|spaghetti/,
+        text: `${productName} is a versatile pantry base that works with many cuisines—from quick weeknight meals to family gatherings. Each batch cooks evenly, holds its texture, and absorbs sauces well, helping you serve consistent, satisfying plates every time.`,
+      },
+      {
+        match: /coffee|espresso|latte|beans/,
+        text: `${productName} is crafted from carefully roasted beans to balance aroma, body, and flavor. Notes of chocolate and caramel make it ideal for both black coffee and milk-based drinks. It is roasted in small batches to keep the taste profile stable over time.`,
+      },
+      {
+        match: /tea|green tea|black tea|herbal/,
+        text: `${productName} is blended from selected tea leaves and botanicals for a smooth, calming experience. It can be enjoyed hot or iced, with or without sweetener. The flavor profile is designed to be gentle enough for daily drinking while still feeling special.`,
+      },
+      {
+        match: /watch|headphone|earbud|speaker|phone/,
+        text: `${productName} is a modern electronic device built for everyday reliability and comfort. It combines sleek design with practical battery life and connectivity. Ideal for users who want a clean look, intuitive controls, and strong performance without complex setup.`,
+      },
+      {
+        match: /t-shirt|shirt|hoodie|jacket|pant|jeans/,
+        text: `${productName} is everyday apparel focused on comfort, fit, and durability. The fabric is chosen to feel soft on skin while holding its shape after repeated washing. It pairs easily with multiple outfits, making it a simple choice for casual or semi-formal wear.`,
+      },
+      {
+        match: /yoga mat|dumbbell|fitness|sport|ball/,
+        text: `${productName} is designed for regular training, with materials that resist wear and provide stable grip. It helps users feel confident and safe whether they are stretching, lifting, or practicing high-intensity routines. Ideal for both home gyms and studio environments.`,
+      },
+      {
+        match: /cleaner|detergent|soap|shampoo|wash/,
+        text: `${productName} is formulated for effective cleaning while being easy to rinse and handle. It is built to remove everyday dirt, oil, and stains without harsh smells or complicated instructions. A good fit for households that want predictable, repeatable cleaning results.`,
+      },
+    ];
 
-    return descriptions[category?.toLowerCase()] || descriptions.default;
+    const categoryDescriptions = {
+      electronics: `Premium ${productName} featuring modern components, stable performance, and a clean design. Great for customers who want technology that simply works without constant tweaking.`,
+      beverages: `${productName} is crafted to be refreshing and consistent in flavor, whether served chilled or at room temperature. Ideal for quick breaks, staff areas, and home fridges.`,
+      home: `${productName} adds practical comfort to living spaces, balancing style with easy maintenance. It fits well into everyday routines without demanding special care.`,
+      sports: `${productName} supports active lifestyles, built to handle repeated use and frequent movement. Helpful for people who want dependable gear rather than purely decorative items.`,
+      bakery: `${productName} delivers a soft, bakery-fresh experience with a focus on flavor and texture. Perfect for breakfast, snacks, or pairing with hot drinks.`,
+      groceries: `${productName} is a core grocery item that supports simple, reliable meals. It is chosen for stable quality, so weekly shopping stays predictable for families.`,
+      default: `High-quality ${productName} designed for durability and ease of use. Suitable for daily life in both home and small business environments.`,
+    } as const;
+
+    // First try to match by product keywords
+    for (const pattern of productPatterns) {
+      if (pattern.match.test(lowerName)) {
+        return pattern.text;
+      }
+    }
+
+    // Then fall back to category-based description
+    return (
+      categoryDescriptions[
+        category?.toLowerCase() as keyof typeof categoryDescriptions
+      ] ?? categoryDescriptions.default
+    );
   }
 
   static async predictCategory(productName) {
@@ -411,18 +495,45 @@ class EnhancedAIService {
 
     const currentMargin =
       ((product.price - product.cost) / product.price) * 100;
-    let suggestion = "Maintain current price";
-    let newPrice = product.price;
-    let expectedImpact = "Neutral";
 
-    if (currentMargin < 25) {
-      suggestion = "Consider 5-8% price increase";
-      newPrice = product.price * 1.06;
-      expectedImpact = "Increase margin by 3-5% with minimal sales impact";
-    } else if (currentMargin > 45) {
-      suggestion = "Consider 3-5% price reduction";
-      newPrice = product.price * 0.96;
-      expectedImpact = "Boost sales volume by 8-12% for higher total profit";
+    const isFastSeller = product.salesLast7Days > 50;
+    const isSlowSeller = product.salesLast7Days < 10;
+
+    let suggestion = "Keep current price and monitor performance.";
+    let newPrice = product.price;
+    let expectedImpact = "Neutral impact on margin and volume.";
+    let explanation = `Current weekly sales: ${
+      product.salesLast7Days
+    } units. Current margin: ${currentMargin.toFixed(1)}%.`;
+
+    if (currentMargin < 25 && isFastSeller) {
+      suggestion = "Increase price slightly to capture more margin.";
+      newPrice = product.price * 1.08;
+      expectedImpact =
+        "Margin likely to improve while sales volume stays healthy.";
+      explanation +=
+        " This product sells fast with a low margin, so a small increase is usually safe.";
+    } else if (currentMargin < 25 && isSlowSeller) {
+      suggestion =
+        "Keep price but improve visibility or bundle with other items.";
+      expectedImpact =
+        "Focus on marketing/promotion rather than immediate price change.";
+      explanation +=
+        " Low margin and low sales suggest a need for better promotion, not higher price.";
+    } else if (currentMargin > 45 && isSlowSeller) {
+      suggestion = "Reduce price slightly to stimulate demand.";
+      newPrice = product.price * 0.95;
+      expectedImpact =
+        "Short-term margin per unit drops, but total revenue may increase with higher volume.";
+      explanation +=
+        " Very high margin and low sales signal room for a discount to attract buyers.";
+    } else if (currentMargin > 45 && isFastSeller) {
+      suggestion =
+        "Maintain price or test a small discount in campaigns only (not store-wide).";
+      expectedImpact =
+        "Protects strong margin while experimenting with temporary offers.";
+      explanation +=
+        " This item already performs well; avoid aggressive price cuts.";
     }
 
     return {
@@ -431,7 +542,8 @@ class EnhancedAIService {
       currentMargin: parseFloat(currentMargin.toFixed(1)),
       suggestion,
       expectedImpact,
-      confidence: 78,
+      explanation,
+      confidence: 82,
     };
   }
 
@@ -479,9 +591,15 @@ class EnhancedAIService {
 }
 
 /**
- * --- REUSABLE COMPONENTS ---
+ * === SECTION: ENHANCED AI SERVICES (END) ===
  */
 
+/**
+ * === SECTION: REUSABLE UI COMPONENTS (START) ===
+ * Purpose: small building blocks (Card, Button, Badge, Input) used in many views.
+ */
+
+// Generic "glass" style container used for panels and cards
 const Card = ({ children, className = "", noPadding = false, isDark }) => (
   <div
     className={`rounded-2xl transition-all duration-300 ${
@@ -492,6 +610,7 @@ const Card = ({ children, className = "", noPadding = false, isDark }) => (
   </div>
 );
 
+// Versatile button with variants/icons/sizes for consistent styling
 const Button = ({
   children,
   onClick,
@@ -535,6 +654,7 @@ const Button = ({
   );
 };
 
+// Tiny label used to highlight statuses (VIP, warning, etc.)
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
     default: "bg-slate-100 text-slate-800 border-slate-200",
@@ -557,6 +677,7 @@ const Badge = ({ children, variant = "default" }) => {
   );
 };
 
+// Text input with optional label and leading icon, tailored for light/dark modes
 const Input = ({ label, icon: Icon, isDark, ...props }) => (
   <div className="flex flex-col gap-1.5 w-full">
     {label && (
@@ -595,7 +716,12 @@ const Input = ({ label, icon: Icon, isDark, ...props }) => (
 );
 
 /**
- * --- MAIN APP COMPONENT ---
+ * === SECTION: REUSABLE UI COMPONENTS (END) ===
+ */
+
+/**
+ * === SECTION: MAIN APP COMPONENT (START) ===
+ * Purpose: holds all global state and decides which high-level view to show.
  */
 
 export default function ShopSmartUltimate() {
@@ -631,6 +757,7 @@ export default function ShopSmartUltimate() {
   const [notifications, setNotifications] = useState([]);
   const [showReceipt, setShowReceipt] = useState(false);
   const [isAIChatOpen, setAIChatOpen] = useState(false);
+  // AI chat state: messages, input field, typing indicator
   const [aiMessages, setAiMessages] = useState([
     {
       role: "system",
@@ -641,6 +768,9 @@ export default function ShopSmartUltimate() {
   const [aiInput, setAiInput] = useState("");
   const [aiTyping, setAiTyping] = useState(false);
   const [showFullReport, setShowFullReport] = useState(false);
+
+  // Optional context for multi-step AI commands (e.g. confirm delete)
+  const [aiCommandContext, setAiCommandContext] = useState(null);
 
   // --- HELPERS ---
   const logAction = (action, details) => {
@@ -679,6 +809,181 @@ export default function ShopSmartUltimate() {
   };
 
   // --- GLOBAL AI CHAT HANDLER ---
+  // First try to interpret the user message as a command (update stock, delete, add product, etc.).
+  // If no command matches, fall back to the "analytics assistant" responses.
+
+  const handleAICommand = async (rawText) => {
+    const text = rawText.trim();
+    const lower = text.toLowerCase();
+
+    // Simple helper to format product list snippets
+    const formatProductList = (list) =>
+      list
+        .map(
+          (p) =>
+            `• ${p.name} (SKU: ${p.sku}, Stock: ${p.stock}, Category: ${p.category})`
+        )
+        .join("\n");
+
+    // 1) DELETE PRODUCT FLOW
+    // "delete" alone → show sample products and explain how to delete by name
+    if (lower === "delete") {
+      const sample = products.slice(0, 5);
+      if (sample.length === 0) {
+        return "There are no products to delete right now.";
+      }
+      setAiCommandContext({ type: "await_delete_name" });
+      return [
+        "Delete mode enabled. Here are some products you can remove:",
+        formatProductList(sample),
+        "",
+        "To delete one, type for example: `delete Organic Coffee Beans`",
+      ].join("\n");
+    }
+
+    // "delete <product name>" → delete matching product
+    if (lower.startsWith("delete ")) {
+      const namePart = text.slice(6).trim().toLowerCase();
+      const matches = products.filter((p) =>
+        p.name.toLowerCase().includes(namePart)
+      );
+
+      if (matches.length === 0) {
+        return `I couldn't find any product matching "${namePart}". Please check the name.`;
+      }
+
+      if (matches.length > 1) {
+        return [
+          "I found multiple matching products. Please type the exact product name:",
+          formatProductList(matches),
+        ].join("\n");
+      }
+
+      const productToDelete = matches[0];
+      setProducts((prev) => prev.filter((p) => p.id !== productToDelete.id));
+      logAction(
+        "AI_DELETE_PRODUCT",
+        `Deleted product ${productToDelete.name} via AI chat.`
+      );
+      addNotification(
+        `Product "${productToDelete.name}" deleted from catalog.`,
+        "success"
+      );
+      setAiCommandContext(null);
+      return `Done. I deleted "${productToDelete.name}" from your catalog.`;
+    }
+
+    // 2) UPDATE STOCK FLOW
+    // Pattern: "update stock <product name> to <number>"
+    const updateMatch = text.match(/update stock\s+(.+?)\s+to\s+(\d+)\s*$/i);
+    if (updateMatch) {
+      const namePart = updateMatch[1].trim().toLowerCase();
+      const targetStock = parseInt(updateMatch[2], 10);
+      const matches = products.filter((p) =>
+        p.name.toLowerCase().includes(namePart)
+      );
+
+      if (matches.length === 0) {
+        return `I couldn't find any product matching "${namePart}" to update stock.`;
+      }
+      if (matches.length > 1) {
+        return [
+          "I found multiple matching products. Please be more specific:",
+          formatProductList(matches),
+        ].join("\n");
+      }
+
+      const productToUpdate = matches[0];
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === productToUpdate.id ? { ...p, stock: targetStock } : p
+        )
+      );
+      logAction(
+        "AI_UPDATE_STOCK",
+        `Updated stock for ${productToUpdate.name} to ${targetStock} via AI chat.`
+      );
+      addNotification(
+        `Stock for "${productToUpdate.name}" set to ${targetStock}.`,
+        "success"
+      );
+      return `Stock updated. "${productToUpdate.name}" now has stock = ${targetStock}.`;
+    }
+
+    // 3) ADD PRODUCT FLOW
+    // Pattern: "add product name=..., sku=..., price=..., stock=..., category=..."
+    if (lower.startsWith("add product")) {
+      const detailsPart = text.replace(/add product/i, "").trim();
+      if (!detailsPart) {
+        return [
+          "To add a product, use:",
+          "add product name=Organic Tea, sku=BV-010, price=9.99, stock=20, category=Beverages",
+        ].join("\n");
+      }
+
+      const fields = detailsPart.split(",").map((chunk) => chunk.trim());
+      const data = {};
+      fields.forEach((chunk) => {
+        const [keyRaw, ...rest] = chunk.split("=");
+        if (!keyRaw || rest.length === 0) return;
+        const key = keyRaw.trim().toLowerCase();
+        const value = rest.join("=").trim();
+        data[key] = value;
+      });
+
+      if (
+        !data.name ||
+        !data.sku ||
+        !data.price ||
+        !data.stock ||
+        !data.category
+      ) {
+        return [
+          "Some required fields are missing. Please include:",
+          "name, sku, price, stock, category",
+          "",
+          "Example:",
+          "add product name=Organic Tea, sku=BV-010, price=9.99, stock=20, category=Beverages",
+        ].join("\n");
+      }
+
+      const newProduct = {
+        id: Date.now(),
+        name: data.name,
+        sku: data.sku,
+        price: parseFloat(data.price),
+        cost: parseFloat(data.cost || data.price) * 0.7,
+        stock: parseInt(data.stock, 10),
+        category: data.category,
+        salesLast7Days: 0,
+        profitMargin: 30,
+        supplier: data.supplier || "AI Assistant",
+        reorderPoint: 10,
+      };
+
+      setProducts((prev) => [newProduct, ...prev]);
+      logAction(
+        "AI_ADD_PRODUCT",
+        `Added product ${newProduct.name} via AI chat.`
+      );
+      addNotification(
+        `New product "${newProduct.name}" added successfully.`,
+        "success"
+      );
+
+      return [
+        "Product created successfully via AI command:",
+        `• Name: ${newProduct.name}`,
+        `• SKU: ${newProduct.sku}`,
+        `• Price: ${formatCurrency(newProduct.price, settings.currency)}`,
+        `• Stock: ${newProduct.stock}`,
+        `• Category: ${newProduct.category}`,
+      ].join("\n");
+    }
+
+    // No command matched → let the analytics assistant handle it instead
+    return null;
+  };
   const handleAIChatSubmit = async (e) => {
     e.preventDefault();
     if (!aiInput.trim()) return;
@@ -689,15 +994,29 @@ export default function ShopSmartUltimate() {
     setAiTyping(true);
 
     try {
-      const vipCount = customers.filter((c) => c.segment === "VIP").length;
-      const response = await EnhancedAIService.chatWithAgent(userMsg.content, {
-        products,
-        customers,
-        settings,
-        user,
-        vipCount,
-      });
-      setAiMessages((prev) => [...prev, { role: "ai", content: response }]);
+      // Try to interpret the message as a command first
+      const commandResponse = await handleAICommand(userMsg.content);
+
+      if (commandResponse) {
+        setAiMessages((prev) => [
+          ...prev,
+          { role: "ai", content: commandResponse },
+        ]);
+      } else {
+        // Fallback: analytics / insights assistant
+        const vipCount = customers.filter((c) => c.segment === "VIP").length;
+        const response = await EnhancedAIService.chatWithAgent(
+          userMsg.content,
+          {
+            products,
+            customers,
+            settings,
+            user,
+            vipCount,
+          }
+        );
+        setAiMessages((prev) => [...prev, { role: "ai", content: response }]);
+      }
     } catch (err) {
       setAiMessages((prev) => [
         ...prev,
@@ -724,7 +1043,12 @@ export default function ShopSmartUltimate() {
   };
 
   // --- VIEW COMPONENTS ---
+  // Each "View" below is a self-contained screen rendered inside the main layout.
 
+  /**
+   * === VIEW: LOGIN (START) ===
+   * Purpose: let the user pick a demo persona (Admin/Manager/Cashier) to "log in" as.
+   */
   const LoginView = () => (
     <div
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
@@ -818,7 +1142,14 @@ export default function ShopSmartUltimate() {
       </button>
     </div>
   );
+  /**
+   * === VIEW: LOGIN (END) ===
+   */
 
+  /**
+   * === VIEW: POS / POINT OF SALE (START) ===
+   * Purpose: fast cashier workflow for scanning items, holding carts, and checking out.
+   */
   const POSView = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -949,6 +1280,7 @@ export default function ShopSmartUltimate() {
         <div className="flex-1 flex flex-col gap-6 overflow-hidden">
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
+              {/* Search bar filters visible products by name or SKU */}
               <Input
                 isDark={darkMode}
                 icon={Search}
@@ -956,6 +1288,7 @@ export default function ShopSmartUltimate() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {/* Open order history modal for quick reference / reprints */}
               <Button
                 variant="secondary"
                 icon={History}
@@ -1362,10 +1695,47 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
+  /**
+   * === VIEW: POS / POINT OF SALE (END) ===
+   */
 
+  /**
+   * === VIEW: DASHBOARD / ANALYTICS (START) ===
+   * Purpose: visual overview of KPIs with AI-generated forecast and report export.
+   */
   const DashboardView = () => {
     const [forecast, setForecast] = useState(null);
     const [loadingForecast, setLoadingForecast] = useState(false);
+
+    // KPI metrics derived from live products & orders
+    const totalRevenue7d = products.reduce(
+      (sum, p) => sum + p.price * p.salesLast7Days,
+      0
+    );
+    const totalUnitsSold7d = products.reduce(
+      (sum, p) => sum + p.salesLast7Days,
+      0
+    );
+    const lowStockCount = products.filter(
+      (p) => p.stock < settings.lowStock
+    ).length;
+
+    // Build category distribution from current products so chart stays in sync
+    const categoryDistribution = Object.values(
+      products.reduce((acc, p) => {
+        const cat = p.category || "Other";
+        if (!acc[cat]) {
+          acc[cat] = {
+            name: cat,
+            value: 0,
+            color: CATEGORY_COLORS[cat] || CATEGORY_COLORS.Other,
+          };
+        }
+        // Weight by revenue over last 7 days for that category
+        acc[cat].value += p.price * p.salesLast7Days;
+        return acc;
+      }, {})
+    ).sort((a, b) => b.value - a.value);
 
     const handleViewFullReport = async () => {
       setLoadingForecast(true);
@@ -1645,7 +2015,7 @@ export default function ShopSmartUltimate() {
           </Card>
         </div>
 
-        {/* Category Distribution Pie Chart */}
+        {/* Category Distribution Pie Chart (live from products) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card isDark={darkMode}>
             <h3
@@ -1659,20 +2029,27 @@ export default function ShopSmartUltimate() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={CATEGORY_SALES}
+                    data={categoryDistribution.filter((c) => c.value > 0)}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, percent }) =>
-                      `${name}: ${(percent * 100).toFixed(0)}%`
-                    }
+                    label={({ name, percent }) => {
+                      const safePercent =
+                        typeof percent === "number" && isFinite(percent)
+                          ? percent * 100
+                          : 0;
+                      return `${name}: ${safePercent.toFixed(0)}%`;
+                    }}
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
+                    nameKey="name"
                   >
-                    {CATEGORY_SALES.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
+                    {categoryDistribution
+                      .filter((c) => c.value > 0)
+                      .map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
                   </Pie>
                   <Tooltip />
                   <Legend />
@@ -1696,28 +2073,41 @@ export default function ShopSmartUltimate() {
                 .map((product) => (
                   <div
                     key={product.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-slate-50/50 dark:bg-slate-800/50"
+                    className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 shadow-sm"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                        <Package
-                          size={16}
-                          className="text-blue-600 dark:text-blue-400"
-                        />
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                        {product.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Package
+                            size={20}
+                            className="text-blue-600 dark:text-blue-400"
+                          />
+                        )}
                       </div>
                       <div>
-                        <p className="font-medium text-sm">{product.name}</p>
+                        <p className="font-semibold text-sm">{product.name}</p>
                         <p className="text-xs text-slate-500">
-                          {product.category}
+                          {product.category} • {product.salesLast7Days} units
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold">
-                        ${(product.price * product.salesLast7Days).toFixed(2)}
+                      <p className="font-bold text-sm">
+                        {formatCurrency(
+                          product.price * product.salesLast7Days,
+                          settings.currency
+                        )}
                       </p>
-                      <p className="text-xs text-slate-500">
-                        {product.salesLast7Days} sales
+                      <p className="text-[11px] text-slate-500">
+                        Avg price{" "}
+                        {formatCurrency(product.price, settings.currency)}
                       </p>
                     </div>
                   </div>
@@ -1893,13 +2283,30 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
+  /**
+   * === VIEW: DASHBOARD / ANALYTICS (END) ===
+   */
 
+  /**
+   * === VIEW: PRODUCTS / CATALOG MANAGEMENT (START) ===
+   * Purpose: CRUD for products plus AI helpers for description, category, and pricing.
+   */
   const ProductManagementView = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({});
     const [generatingDesc, setGeneratingDesc] = useState(false);
     const [predictingCat, setPredictingCat] = useState(false);
-    const [showPriceOptimization, setShowPriceOptimization] = useState(null);
+    const [showPriceOptimization, setShowPriceOptimization] = useState<{
+      currentPrice: number;
+      suggestedPrice: number;
+      currentMargin: number;
+      suggestion: string;
+      expectedImpact: string;
+      explanation: string;
+      confidence: number;
+    } | null>(null);
+    const [productSearch, setProductSearch] = useState("");
+    const [productCategoryFilter, setProductCategoryFilter] = useState("All");
 
     const handleGenerateDesc = async () => {
       setGeneratingDesc(true);
@@ -1910,6 +2317,16 @@ export default function ShopSmartUltimate() {
       setEditForm((prev) => ({ ...prev, description: desc }));
       setGeneratingDesc(false);
     };
+
+    const filteredProducts = products.filter((p) => {
+      const matchesSearch =
+        !productSearch ||
+        p.name.toLowerCase().includes(productSearch.toLowerCase()) ||
+        p.sku.toLowerCase().includes(productSearch.toLowerCase());
+      const matchesCategory =
+        productCategoryFilter === "All" || p.category === productCategoryFilter;
+      return matchesSearch && matchesCategory;
+    });
 
     const handlePredictCategory = async () => {
       if (!editForm.name) return;
@@ -1965,16 +2382,35 @@ export default function ShopSmartUltimate() {
           >
             Product Management
           </h2>
-          <div className="flex gap-3">
-            <Button
-              variant="secondary"
-              icon={Filter}
-              onClick={() =>
-                addNotification("Filter feature coming soon", "info")
-              }
-            >
-              Filter
-            </Button>
+          <div className="flex gap-3 items-center">
+            <div className="hidden md:flex items-center gap-2">
+              <input
+                value={productSearch}
+                onChange={(e) => setProductSearch(e.target.value)}
+                placeholder="Search by name or SKU..."
+                className={`px-3 py-2 rounded-lg text-xs border outline-none ${
+                  darkMode
+                    ? "bg-slate-900 border-slate-700 text-white"
+                    : "bg-white border-slate-200 text-slate-700"
+                }`}
+              />
+              <select
+                value={productCategoryFilter}
+                onChange={(e) => setProductCategoryFilter(e.target.value)}
+                className={`px-3 py-2 rounded-lg text-xs border outline-none ${
+                  darkMode
+                    ? "bg-slate-900 border-slate-700 text-white"
+                    : "bg-white border-slate-200 text-slate-700"
+                }`}
+              >
+                <option value="All">All Categories</option>
+                {[...new Set(products.map((p) => p.category))].map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
             <Button
               onClick={() => {
                 setIsEditing(true);
@@ -2014,7 +2450,7 @@ export default function ShopSmartUltimate() {
                 darkMode ? "divide-slate-700" : "divide-slate-100"
               }`}
             >
-              {products.map((p) => (
+              {filteredProducts.map((p) => (
                 <tr
                   key={p.id}
                   className={`${
@@ -2223,6 +2659,15 @@ export default function ShopSmartUltimate() {
                     </div>
                   </div>
                 </div>
+                <Input
+                  isDark={darkMode}
+                  label="Image URL (optional)"
+                  value={editForm.image || ""}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, image: e.target.value })
+                  }
+                  placeholder="https://example.com/product.jpg"
+                />
                 <div>
                   <div className="flex justify-between items-center mb-1">
                     <label
@@ -2325,6 +2770,9 @@ export default function ShopSmartUltimate() {
                   <p className="text-xs text-slate-500 mt-1">
                     Confidence: {showPriceOptimization.confidence}%
                   </p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {showPriceOptimization.explanation}
+                  </p>
                 </div>
                 <div className="flex gap-2 justify-end mt-4">
                   <Button
@@ -2362,7 +2810,14 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
+  /**
+   * === VIEW: PRODUCTS / CATALOG MANAGEMENT (END) ===
+   */
 
+  /**
+   * === VIEW: INVENTORY HEALTH & RESTOCKING (START) ===
+   * Purpose: monitor low stock, restock items, and export inventory reports.
+   */
   const InventoryView = () => {
     const [restockModal, setRestockModal] = useState(null);
     const [amount, setAmount] = useState(10);
@@ -2687,7 +3142,14 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
+  /**
+   * === VIEW: INVENTORY HEALTH & RESTOCKING (END) ===
+   */
 
+  /**
+   * === VIEW: CUSTOMERS / CRM & LOYALTY (START) ===
+   * Purpose: manage customer profiles, loyalty points, and AI-driven segment insights.
+   */
   const CustomersView = () => {
     const [isAddMode, setIsAddMode] = useState(false);
     const [newCustomer, setNewCustomer] = useState({});
@@ -2701,7 +3163,7 @@ export default function ShopSmartUltimate() {
         id: Date.now(),
         points: 0,
         lastVisit: new Date().toISOString().split("T")[0],
-        segment: "New",
+        segment: newCustomer.segment || "New",
         totalSpent: 0,
         visitCount: 1,
       };
@@ -3056,6 +3518,27 @@ export default function ShopSmartUltimate() {
                     setNewCustomer({ ...newCustomer, phone: e.target.value })
                   }
                 />
+                <div className="text-xs font-bold uppercase tracking-wider mt-2 mb-1 text-slate-500">
+                  Customer Type
+                </div>
+                <div className="flex gap-2">
+                  {["New", "Regular", "VIP"].map((seg) => (
+                    <button
+                      key={seg}
+                      type="button"
+                      onClick={() =>
+                        setNewCustomer({ ...newCustomer, segment: seg })
+                      }
+                      className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold border ${
+                        newCustomer.segment === seg
+                          ? "bg-blue-600 text-white border-blue-600"
+                          : "bg-transparent text-slate-500 border-slate-300"
+                      }`}
+                    >
+                      {seg}
+                    </button>
+                  ))}
+                </div>
                 <div className="flex gap-2 justify-end mt-4 pt-2">
                   <Button
                     variant="secondary"
@@ -3072,7 +3555,14 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
+  /**
+   * === VIEW: CUSTOMERS / CRM & LOYALTY (END) ===
+   */
 
+  /**
+   * === VIEW: SETTINGS & SYSTEM CONFIGURATION (START) ===
+   * Purpose: tweak store settings, export audit logs, and manage appearance/AI options.
+   */
   const SettingsView = () => {
     const [activeTab, setActiveTab] = useState("general");
     const [localSettings, setLocalSettings] = useState(settings);
@@ -3489,8 +3979,11 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
+  /**
+   * === VIEW: SETTINGS & SYSTEM CONFIGURATION (END) ===
+   */
 
-  // Role-based navigation configuration
+  // Role-based navigation configuration for the left sidebar
   const getNavigationItems = () => {
     const baseItems = [
       {
@@ -3557,8 +4050,10 @@ export default function ShopSmartUltimate() {
     return baseItems;
   };
 
+  // If no user is selected yet, show the login personas instead of the app shell
   if (!user) return <LoginView />;
 
+  // Main authenticated layout: sidebar navigation + header + active view + AI chat
   return (
     <div
       className={`flex h-screen overflow-hidden font-sans transition-colors duration-300 ${
