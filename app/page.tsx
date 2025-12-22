@@ -61,6 +61,7 @@ import {
 /**
  * === SECTION: MOCK DATA & APP-WIDE CONSTANTS (START) ===
  * Purpose: central place for roles, themes, seed data, and chart demo data.
+ * Contributor: Team Member 1 - Database Schema Design
  */
 
 // Basic role identifiers used for access control and default views
@@ -103,6 +104,22 @@ const INITIAL_USERS = [
   },
 ];
 
+// Real product images from Unsplash for POS view
+const PRODUCT_IMAGES = {
+  "Organic Coffee Beans":
+    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&h=300&q=80",
+  "Ceramic Mug Set":
+    "https://images.unsplash.com/photo-1593665530287-6a2955419954?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  "Wireless Headphones":
+    "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&h=300&q=80",
+  "Artisan Sourdough":
+    "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=400&h=300&q=80",
+  "Smart Watch Gen 4":
+    "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&h=300&q=80",
+  "Yoga Mat":
+    "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?auto=format&fit=crop&w=400&h=300&q=80",
+};
+
 // Initial catalog of products used by POS, inventory, reports, etc.
 const INITIAL_PRODUCTS = [
   {
@@ -117,8 +134,7 @@ const INITIAL_PRODUCTS = [
     profitMargin: 35.1,
     supplier: "Organic Farms Inc.",
     reorderPoint: 20,
-    image:
-      "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80",
+    image: PRODUCT_IMAGES["Organic Coffee Beans"],
   },
   {
     id: 102,
@@ -132,8 +148,7 @@ const INITIAL_PRODUCTS = [
     profitMargin: 40.0,
     supplier: "Home Decor Co.",
     reorderPoint: 15,
-    image:
-      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=400&q=80",
+    image: PRODUCT_IMAGES["Ceramic Mug Set"],
   },
   {
     id: 103,
@@ -147,8 +162,7 @@ const INITIAL_PRODUCTS = [
     profitMargin: 27.8,
     supplier: "Tech Solutions Ltd.",
     reorderPoint: 10,
-    image:
-      "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=400&q=80",
+    image: PRODUCT_IMAGES["Wireless Headphones"],
   },
   {
     id: 104,
@@ -162,8 +176,7 @@ const INITIAL_PRODUCTS = [
     profitMargin: 38.5,
     supplier: "Local Bakery",
     reorderPoint: 25,
-    image:
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80",
+    image: PRODUCT_IMAGES["Artisan Sourdough"],
   },
   {
     id: 105,
@@ -177,8 +190,7 @@ const INITIAL_PRODUCTS = [
     profitMargin: 25.0,
     supplier: "Tech Solutions Ltd.",
     reorderPoint: 15,
-    image:
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80",
+    image: PRODUCT_IMAGES["Smart Watch Gen 4"],
   },
   {
     id: 106,
@@ -192,8 +204,7 @@ const INITIAL_PRODUCTS = [
     profitMargin: 40.0,
     supplier: "Fitness Gear Inc.",
     reorderPoint: 10,
-    image:
-      "https://images.unsplash.com/photo-1599059813505-6cdaafbc2316?auto=format&fit=crop&w=400&q=80",
+    image: PRODUCT_IMAGES["Yoga Mat"],
   },
 ];
 
@@ -301,6 +312,7 @@ const CATEGORY_COLORS = {
 /**
  * === SECTION: ENHANCED AI SERVICES (START) ===
  * Purpose: fake "AI" helpers that simulate latency and return smart-looking text.
+ * Contributor: Team Member 2 - AI Integration & Analytics
  */
 
 // Shared money formatter so all views show consistent currency strings
@@ -406,8 +418,12 @@ class EnhancedAIService {
   static async analyzeCustomerSegment(customer) {
     await new Promise((r) => setTimeout(r, 700));
 
+    // Enhanced AI insights with actionable recommendations
     const insights = [];
+    let summary = "";
+
     if (customer.points > 1000) {
+      summary = "High-Value VIP Customer";
       insights.push({
         segment: "High-Value VIP",
         recommendation:
@@ -415,21 +431,38 @@ class EnhancedAIService {
         action:
           "Send VIP-only 25% discount code and invitation to private sale event.",
         priority: "high",
+        metrics: {
+          purchaseFrequency: "Weekly",
+          avgOrderValue: "$150+",
+          retentionRate: "95%",
+        },
       });
     } else if (customer.points > 300) {
+      summary = "Regular Loyal Customer";
       insights.push({
         segment: "Regular Customer",
         recommendation: "Increase purchase frequency with targeted promotions.",
         action: "Email 15% discount on next purchase within 7 days.",
         priority: "medium",
+        metrics: {
+          purchaseFrequency: "Monthly",
+          avgOrderValue: "$75+",
+          retentionRate: "80%",
+        },
       });
     } else {
+      summary = "New/Low Engagement Customer";
       insights.push({
         segment: "New/Low Engagement",
         recommendation: "Build loyalty with welcome offers and education.",
         action:
           "Send welcome email with 20% off first purchase and loyalty program details.",
         priority: "low",
+        metrics: {
+          purchaseFrequency: "First-time",
+          avgOrderValue: "$50+",
+          retentionRate: "40%",
+        },
       });
     }
 
@@ -438,9 +471,20 @@ class EnhancedAIService {
       insights[0].personalized = `Based on interest in ${customer.preferences.join(
         ", "
       )}, recommend related products.`;
+      insights[0].suggestedProducts = customer.preferences.map(
+        (pref) => `New ${pref} collection items`
+      );
     }
 
-    return insights;
+    // Add next best action
+    insights[0].nextBestAction =
+      customer.segment === "VIP"
+        ? "Invite to exclusive product launch event"
+        : customer.segment === "Regular"
+        ? "Offer birthday month discount"
+        : "Send product education content";
+
+    return { insights, summary };
   }
 
   static async generateSalesForecast(timeframe = "7days") {
@@ -597,6 +641,7 @@ class EnhancedAIService {
 /**
  * === SECTION: REUSABLE UI COMPONENTS (START) ===
  * Purpose: small building blocks (Card, Button, Badge, Input) used in many views.
+ * Contributor: Team Member 3 - UI Components & Design System
  */
 
 // Generic "glass" style container used for panels and cards
@@ -610,7 +655,7 @@ const Card = ({ children, className = "", noPadding = false, isDark }) => (
   </div>
 );
 
-// Versatile button with variants/icons/sizes for consistent styling
+// Versatile button with consistent primary color throughout the site
 const Button = ({
   children,
   onClick,
@@ -626,9 +671,11 @@ const Button = ({
     md: "px-4 py-2.5 text-sm",
     lg: "px-6 py-3 text-base",
   };
+
+  // Updated variants with consistent primary color (#3b82f6 - blue-500)
   const variants = {
     primary:
-      "bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:shadow-lg hover:shadow-blue-500/30 border border-transparent",
+      "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:shadow-lg hover:shadow-blue-500/30 border border-transparent hover:from-blue-600 hover:to-blue-700",
     secondary:
       "bg-white/50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-600",
     danger:
@@ -694,7 +741,7 @@ const Input = ({ label, icon: Icon, isDark, ...props }) => (
         <Icon
           className={`absolute left-3 top-3 transition-colors ${
             isDark
-              ? "text-slate-500 group-focus-within:text-blue-400"
+              ? "text-slate-500 group-focus-within:text-blue-500"
               : "text-slate-400 group-focus-within:text-blue-600"
           }`}
           size={18}
@@ -722,6 +769,7 @@ const Input = ({ label, icon: Icon, isDark, ...props }) => (
 /**
  * === SECTION: MAIN APP COMPONENT (START) ===
  * Purpose: holds all global state and decides which high-level view to show.
+ * Contributor: Team Member 4 - State Management & Core Logic
  */
 
 export default function ShopSmartUltimate() {
@@ -757,14 +805,32 @@ export default function ShopSmartUltimate() {
   const [notifications, setNotifications] = useState([]);
   const [showReceipt, setShowReceipt] = useState(false);
   const [isAIChatOpen, setAIChatOpen] = useState(false);
-  // AI chat state: messages, input field, typing indicator
-  const [aiMessages, setAiMessages] = useState([
-    {
-      role: "system",
-      content:
-        "Hello! I am your ShopSmart AI Assistant. Ask me about sales, inventory, or customer trends.",
-    },
-  ]);
+
+  // Role-based AI chat state - each role has separate chat history
+  const [aiChats, setAiChats] = useState({
+    admin: [
+      {
+        role: "system",
+        content:
+          "Hello Admin! I am your ShopSmart AI Assistant with full system access. Ask me about sales, inventory, customers, or system settings.",
+      },
+    ],
+    manager: [
+      {
+        role: "system",
+        content:
+          "Hello Manager! I am your ShopSmart AI Assistant. Ask me about sales, inventory, products, or reports.",
+      },
+    ],
+    cashier: [
+      {
+        role: "system",
+        content:
+          "Hello Cashier! I am your ShopSmart AI Assistant. I can help with product info, prices, and basic sales queries.",
+      },
+    ],
+  });
+
   const [aiInput, setAiInput] = useState("");
   const [aiTyping, setAiTyping] = useState(false);
   const [showFullReport, setShowFullReport] = useState(false);
@@ -808,10 +874,20 @@ export default function ShopSmartUltimate() {
     addNotification(`Welcome back, ${selectedUser.name}!`, "success");
   };
 
-  // --- GLOBAL AI CHAT HANDLER ---
-  // First try to interpret the user message as a command (update stock, delete, add product, etc.).
-  // If no command matches, fall back to the "analytics assistant" responses.
+  // Get current role-based AI chat
+  const getCurrentAiChat = () => {
+    return user ? aiChats[user.role] || aiChats.cashier : aiChats.cashier;
+  };
 
+  const setCurrentAiChat = (messages) => {
+    if (!user) return;
+    setAiChats((prev) => ({
+      ...prev,
+      [user.role]: messages,
+    }));
+  };
+
+  // --- GLOBAL AI CHAT HANDLER ---
   const handleAICommand = async (rawText) => {
     const text = rawText.trim();
     const lower = text.toLowerCase();
@@ -826,7 +902,6 @@ export default function ShopSmartUltimate() {
         .join("\n");
 
     // 1) DELETE PRODUCT FLOW
-    // "delete" alone → show sample products and explain how to delete by name
     if (lower === "delete") {
       const sample = products.slice(0, 5);
       if (sample.length === 0) {
@@ -841,7 +916,6 @@ export default function ShopSmartUltimate() {
       ].join("\n");
     }
 
-    // "delete <product name>" → delete matching product
     if (lower.startsWith("delete ")) {
       const namePart = text.slice(6).trim().toLowerCase();
       const matches = products.filter((p) =>
@@ -874,7 +948,6 @@ export default function ShopSmartUltimate() {
     }
 
     // 2) UPDATE STOCK FLOW
-    // Pattern: "update stock <product name> to <number>"
     const updateMatch = text.match(/update stock\s+(.+?)\s+to\s+(\d+)\s*$/i);
     if (updateMatch) {
       const namePart = updateMatch[1].trim().toLowerCase();
@@ -911,7 +984,6 @@ export default function ShopSmartUltimate() {
     }
 
     // 3) ADD PRODUCT FLOW
-    // Pattern: "add product name=..., sku=..., price=..., stock=..., category=..."
     if (lower.startsWith("add product")) {
       const detailsPart = text.replace(/add product/i, "").trim();
       if (!detailsPart) {
@@ -984,12 +1056,15 @@ export default function ShopSmartUltimate() {
     // No command matched → let the analytics assistant handle it instead
     return null;
   };
+
   const handleAIChatSubmit = async (e) => {
     e.preventDefault();
-    if (!aiInput.trim()) return;
+    if (!aiInput.trim() || !user) return;
 
+    const currentChat = getCurrentAiChat();
     const userMsg = { role: "user", content: aiInput };
-    setAiMessages((prev) => [...prev, userMsg]);
+    const updatedMessages = [...currentChat, userMsg];
+    setCurrentAiChat(updatedMessages);
     setAiInput("");
     setAiTyping(true);
 
@@ -998,33 +1073,63 @@ export default function ShopSmartUltimate() {
       const commandResponse = await handleAICommand(userMsg.content);
 
       if (commandResponse) {
-        setAiMessages((prev) => [
-          ...prev,
-          { role: "ai", content: commandResponse },
-        ]);
+        const aiResponse = { role: "ai", content: commandResponse };
+        setCurrentAiChat([...updatedMessages, aiResponse]);
       } else {
-        // Fallback: analytics / insights assistant
+        // Fallback: analytics / insights assistant with role-based responses
         const vipCount = customers.filter((c) => c.segment === "VIP").length;
-        const response = await EnhancedAIService.chatWithAgent(
-          userMsg.content,
-          {
+        let response = "";
+
+        // Role-specific responses
+        if (user.role === ROLES.ADMIN) {
+          response = await EnhancedAIService.chatWithAgent(userMsg.content, {
             products,
             customers,
             settings,
             user,
             vipCount,
+          });
+        } else if (user.role === ROLES.MANAGER) {
+          // Manager has limited access
+          if (
+            userMsg.content.toLowerCase().includes("settings") ||
+            userMsg.content.toLowerCase().includes("admin")
+          ) {
+            response =
+              "As a Manager, I can help with sales, inventory, and product queries. For system settings, please contact an administrator.";
+          } else {
+            response = await EnhancedAIService.chatWithAgent(userMsg.content, {
+              products,
+              customers,
+              settings,
+              user,
+              vipCount,
+            });
           }
-        );
-        setAiMessages((prev) => [...prev, { role: "ai", content: response }]);
+        } else {
+          // Cashier has basic access only
+          if (
+            userMsg.content.toLowerCase().includes("sales") ||
+            userMsg.content.toLowerCase().includes("inventory") ||
+            userMsg.content.toLowerCase().includes("customer")
+          ) {
+            response =
+              "As a Cashier, I can help with product information, prices, and basic store operations. For detailed analytics, please contact a manager.";
+          } else {
+            response =
+              "I can help you find product information, check prices, and assist with basic store operations. What would you like to know?";
+          }
+        }
+
+        const aiResponse = { role: "ai", content: response };
+        setCurrentAiChat([...updatedMessages, aiResponse]);
       }
     } catch (err) {
-      setAiMessages((prev) => [
-        ...prev,
-        {
-          role: "ai",
-          content: "Sorry, I encountered an error processing that request.",
-        },
-      ]);
+      const errorResponse = {
+        role: "ai",
+        content: "Sorry, I encountered an error processing that request.",
+      };
+      setCurrentAiChat([...updatedMessages, errorResponse]);
     } finally {
       setAiTyping(false);
     }
@@ -1099,10 +1204,10 @@ export default function ShopSmartUltimate() {
                   className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-sm
                   ${
                     u.role === "admin"
-                      ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-500 text-white"
                       : u.role === "manager"
-                      ? "bg-gradient-to-r from-emerald-500 to-green-500 text-white"
-                      : "bg-gradient-to-r from-orange-500 to-red-500 text-white"
+                      ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white"
+                      : "bg-gradient-to-r from-blue-400 to-blue-500 text-white"
                   }`}
                 >
                   {u.avatar}
@@ -1149,6 +1254,7 @@ export default function ShopSmartUltimate() {
   /**
    * === VIEW: POS / POINT OF SALE (START) ===
    * Purpose: fast cashier workflow for scanning items, holding carts, and checking out.
+   * Contributor: Team Member 5 - POS & Transaction System
    */
   const POSView = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -1189,7 +1295,6 @@ export default function ShopSmartUltimate() {
       });
     };
 
-    // Park the active cart so the cashier can resume it later without losing items
     const handleHoldOrder = () => {
       if (cart.length === 0) return;
       const holdId = `HLD-${Date.now().toString().slice(-6)}`;
@@ -1207,7 +1312,6 @@ export default function ShopSmartUltimate() {
       addNotification(`Order ${holdId} Parked`, "success");
     };
 
-    // Restore a previously held order back into the live cart; only allowed when empty
     const handleResumeOrder = (order) => {
       if (cart.length > 0)
         return addNotification("Clear current cart first", "warning");
@@ -1218,7 +1322,6 @@ export default function ShopSmartUltimate() {
       logAction("POS_RESUME", `Order ${order.id} resumed.`);
     };
 
-    // Finalize a sale: persist order, decrement stock, update customer stats, and reset the session
     const handleCheckout = (amountPaid = total) => {
       if (cart.length === 0) return;
       const orderId = `ORD-${Date.now().toString().slice(-6)}`;
@@ -1280,7 +1383,6 @@ export default function ShopSmartUltimate() {
         <div className="flex-1 flex flex-col gap-6 overflow-hidden">
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
-              {/* Search bar filters visible products by name or SKU */}
               <Input
                 isDark={darkMode}
                 icon={Search}
@@ -1288,9 +1390,8 @@ export default function ShopSmartUltimate() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              {/* Open order history modal for quick reference / reprints */}
               <Button
-                variant="secondary"
+                variant="primary"
                 icon={History}
                 onClick={() => setShowHistory(true)}
               >
@@ -1312,7 +1413,7 @@ export default function ShopSmartUltimate() {
                   className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all
                     ${
                       selectedCategory === cat
-                        ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
+                        ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30"
                         : darkMode
                         ? "bg-slate-800 text-slate-400 hover:bg-slate-700"
                         : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
@@ -1337,20 +1438,26 @@ export default function ShopSmartUltimate() {
                       : "bg-white border-slate-200 hover:border-blue-500 hover:shadow-lg hover:-translate-y-1"
                   } ${p.stock === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
               >
-                <div
-                  className={`h-24 rounded-xl mb-3 flex items-center justify-center text-4xl transition-transform group-hover:scale-110 ${
-                    darkMode ? "bg-slate-700/50" : "bg-slate-50"
-                  }`}
-                >
-                  {p.category === "Beverages"
-                    ? "☕"
-                    : p.category === "Electronics"
-                    ? "🔌"
-                    : p.category === "Home"
-                    ? "🏠"
-                    : p.category === "Sports"
-                    ? "⚽"
-                    : "📦"}
+                <div className="h-24 rounded-xl mb-3 flex items-center justify-center overflow-hidden bg-slate-100 dark:bg-slate-700/50">
+                  {p.image ? (
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="text-4xl">
+                      {p.category === "Beverages"
+                        ? "☕"
+                        : p.category === "Electronics"
+                        ? "🔌"
+                        : p.category === "Home"
+                        ? "🏠"
+                        : p.category === "Sports"
+                        ? "⚽"
+                        : "📦"}
+                    </div>
+                  )}
                 </div>
                 <h3
                   className={`font-bold text-sm truncate ${
@@ -1361,12 +1468,12 @@ export default function ShopSmartUltimate() {
                 </h3>
                 <div className="flex justify-between items-end mt-2">
                   <span className="text-lg font-extrabold text-blue-500">
-                    ${p.price}
+                    ${p.price.toFixed(2)}
                   </span>
                   <Badge
                     variant={p.stock < settings.lowStock ? "danger" : "default"}
                   >
-                    {p.stock}
+                    {p.stock} in stock
                   </Badge>
                 </div>
               </button>
@@ -1388,7 +1495,7 @@ export default function ShopSmartUltimate() {
             {activeCustomer ? (
               <div className="flex justify-between items-center bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white flex items-center justify-center font-bold">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white flex items-center justify-center font-bold">
                     {activeCustomer.name.charAt(0)}
                   </div>
                   <div>
@@ -1472,7 +1579,7 @@ export default function ShopSmartUltimate() {
                       {item.name}
                     </div>
                     <div className="text-xs text-slate-500">
-                      ${item.price} x {item.qty}
+                      ${item.price.toFixed(2)} x {item.qty}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -1549,6 +1656,7 @@ export default function ShopSmartUltimate() {
                 Hold Order
               </Button>
               <Button
+                variant="primary"
                 onClick={() => handleCheckout(total)}
                 disabled={cart.length === 0}
                 icon={DollarSign}
@@ -1611,6 +1719,7 @@ export default function ShopSmartUltimate() {
                           {formatCurrency(order.total)}
                         </span>
                         <Button
+                          variant="primary"
                           size="sm"
                           onClick={() => handleResumeOrder(order)}
                           icon={PlayCircle}
@@ -1702,6 +1811,7 @@ export default function ShopSmartUltimate() {
   /**
    * === VIEW: DASHBOARD / ANALYTICS (START) ===
    * Purpose: visual overview of KPIs with AI-generated forecast and report export.
+   * Contributor: Team Member 2 - Analytics & Reporting
    */
   const DashboardView = () => {
     const [forecast, setForecast] = useState(null);
@@ -1807,7 +1917,7 @@ export default function ShopSmartUltimate() {
           {[
             {
               label: "Total Revenue",
-              val: "$24,500",
+              val: formatCurrency(totalRevenue7d),
               trend: "+12%",
               icon: DollarSign,
               color: "text-emerald-500",
@@ -1823,7 +1933,7 @@ export default function ShopSmartUltimate() {
             },
             {
               label: "Low Stock",
-              val: products.filter((p) => p.stock < settings.lowStock).length,
+              val: lowStockCount,
               trend: "-2",
               icon: AlertTriangle,
               color: "text-rose-500",
@@ -1952,7 +2062,7 @@ export default function ShopSmartUltimate() {
             </div>
           </Card>
 
-          <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white border-none shadow-2xl relative overflow-hidden">
+          <Card className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white border-none shadow-2xl relative overflow-hidden">
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-6">
@@ -1963,7 +2073,7 @@ export default function ShopSmartUltimate() {
                 </div>
                 <div className="space-y-4">
                   <div className="bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
-                    <p className="text-xs text-indigo-200 font-bold uppercase mb-1">
+                    <p className="text-xs text-blue-200 font-bold uppercase mb-1">
                       Prediction
                     </p>
                     <p className="font-medium">
@@ -1975,7 +2085,7 @@ export default function ShopSmartUltimate() {
                     </p>
                   </div>
                   <div className="bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
-                    <p className="text-xs text-indigo-200 font-bold uppercase mb-1">
+                    <p className="text-xs text-blue-200 font-bold uppercase mb-1">
                       Restock Alert
                     </p>
                     <p className="font-medium">
@@ -1984,7 +2094,7 @@ export default function ShopSmartUltimate() {
                     </p>
                   </div>
                   <div className="bg-black/20 p-4 rounded-xl backdrop-blur-md border border-white/10">
-                    <p className="text-xs text-indigo-200 font-bold uppercase mb-1">
+                    <p className="text-xs text-blue-200 font-bold uppercase mb-1">
                       Customer Insight
                     </p>
                     <p className="font-medium">
@@ -1996,7 +2106,7 @@ export default function ShopSmartUltimate() {
               </div>
               <div className="flex gap-2 mt-6">
                 <Button
-                  className="flex-1 bg-white text-indigo-600 hover:bg-indigo-50 shadow-none border-none"
+                  className="flex-1 bg-white text-blue-600 hover:bg-blue-50 shadow-none border-none"
                   onClick={handleViewFullReport}
                   disabled={loadingForecast}
                   icon={loadingForecast ? RefreshCw : FileText}
@@ -2011,7 +2121,7 @@ export default function ShopSmartUltimate() {
                 />
               </div>
             </div>
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-purple-500 rounded-full blur-3xl opacity-50"></div>
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-500 rounded-full blur-3xl opacity-50"></div>
           </Card>
         </div>
 
@@ -2059,55 +2169,78 @@ export default function ShopSmartUltimate() {
           </Card>
 
           <Card isDark={darkMode}>
-            <h3
-              className={`font-bold text-lg mb-4 ${
-                darkMode ? "text-white" : "text-slate-800"
-              }`}
-            >
+            <h3 className="font-semibold text-lg mb-4 text-blue-600 dark:text-blue-400">
               Top Performing Products
             </h3>
+
             <div className="space-y-3">
               {products
                 .sort((a, b) => b.salesLast7Days - a.salesLast7Days)
-                .slice(0, 4)
-                .map((product) => (
+                .slice(0, 5)
+                .map((product, index) => (
                   <div
                     key={product.id}
-                    className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-slate-900 shadow-sm"
+                    className="
+            flex items-center justify-between
+            px-4 py-3 rounded-xl
+            bg-white dark:bg-slate-900
+            border border-slate-200 dark:border-slate-700
+
+            shadow-[0_10px_30px_rgba(0,0,0,0.08)]
+            animate-[softFloat_5s_ease-in-out_infinite]
+          "
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
-                        {product.image ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <Package
-                            size={20}
-                            className="text-blue-600 dark:text-blue-400"
-                          />
-                        )}
+                    {/* LEFT */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className="
+              w-8 h-8 rounded-full
+              bg-blue-600 dark:bg-blue-500
+              text-white text-xs font-bold
+              flex items-center justify-center
+            "
+                      >
+                        #{index + 1}
                       </div>
-                      <div>
-                        <p className="font-semibold text-sm">{product.name}</p>
-                        <p className="text-xs text-slate-500">
-                          {product.category} • {product.salesLast7Days} units
+
+                      <div className="min-w-0">
+                        <p
+                          className="
+                font-semibold text-sm
+                text-slate-900 dark:text-slate-100
+                truncate
+              "
+                        >
+                          {product.name}
+                        </p>
+                        <p
+                          className="
+                text-xs
+                text-slate-600 dark:text-slate-400
+                truncate
+              "
+                        >
+                          {product.category} • {product.salesLast7Days} sold
+                          (7d)
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-bold text-sm">
+
+                    {/* RIGHT */}
+                    <div className="text-right shrink-0">
+                      <p
+                        className="
+              font-semibold text-sm
+              text-blue-600 dark:text-blue-400
+            "
+                      >
                         {formatCurrency(
                           product.price * product.salesLast7Days,
                           settings.currency
                         )}
                       </p>
-                      <p className="text-[11px] text-slate-500">
-                        Avg price{" "}
-                        {formatCurrency(product.price, settings.currency)}
+                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                        ${product.price.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -2143,7 +2276,7 @@ export default function ShopSmartUltimate() {
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     onClick={handleDownloadReport}
                     icon={Download}
                   >
@@ -2273,7 +2406,10 @@ export default function ShopSmartUltimate() {
               </div>
 
               <div className="p-6 pt-0 flex justify-end">
-                <Button onClick={() => setShowFullReport(false)}>
+                <Button
+                  variant="primary"
+                  onClick={() => setShowFullReport(false)}
+                >
                   Close Report
                 </Button>
               </div>
@@ -2290,6 +2426,7 @@ export default function ShopSmartUltimate() {
   /**
    * === VIEW: PRODUCTS / CATALOG MANAGEMENT (START) ===
    * Purpose: CRUD for products plus AI helpers for description, category, and pricing.
+   * Contributor: Team Member 3 - Product Management System
    */
   const ProductManagementView = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -2412,6 +2549,7 @@ export default function ShopSmartUltimate() {
               </select>
             </div>
             <Button
+              variant="primary"
               onClick={() => {
                 setIsEditing(true);
                 setEditForm({});
@@ -2644,7 +2782,7 @@ export default function ShopSmartUltimate() {
                         }
                       />
                       <Button
-                        variant="secondary"
+                        variant="primary"
                         onClick={handlePredictCategory}
                         disabled={predictingCat || !editForm.name}
                         className="whitespace-nowrap"
@@ -2680,7 +2818,7 @@ export default function ShopSmartUltimate() {
                     <button
                       onClick={handleGenerateDesc}
                       disabled={generatingDesc || !editForm.name}
-                      className="text-xs flex items-center gap-1 text-purple-500 font-bold hover:text-purple-400"
+                      className="text-xs flex items-center gap-1 text-blue-500 font-bold hover:text-blue-400"
                     >
                       {generatingDesc ? (
                         <RefreshCw size={12} className="animate-spin" />
@@ -2704,7 +2842,11 @@ export default function ShopSmartUltimate() {
                   ></textarea>
                 </div>
                 <div className="pt-4 flex gap-3">
-                  <Button className="flex-1" onClick={handleSave}>
+                  <Button
+                    variant="primary"
+                    className="flex-1"
+                    onClick={handleSave}
+                  >
                     Save Product
                   </Button>
                   <Button
@@ -2782,6 +2924,7 @@ export default function ShopSmartUltimate() {
                     Keep Current
                   </Button>
                   <Button
+                    variant="primary"
                     onClick={() => {
                       setProducts((prev) =>
                         prev.map((p) =>
@@ -2817,6 +2960,7 @@ export default function ShopSmartUltimate() {
   /**
    * === VIEW: INVENTORY HEALTH & RESTOCKING (START) ===
    * Purpose: monitor low stock, restock items, and export inventory reports.
+   * Contributor: Team Member 1 - Inventory Management System
    */
   const InventoryView = () => {
     const [restockModal, setRestockModal] = useState(null);
@@ -2982,7 +3126,7 @@ export default function ShopSmartUltimate() {
             </h3>
             <div className="flex gap-2">
               <Button
-                variant="secondary"
+                variant="primary"
                 icon={Download}
                 className="text-xs"
                 onClick={handleDownloadReport}
@@ -3063,9 +3207,7 @@ export default function ShopSmartUltimate() {
                   </td>
                   <td className="px-6 py-4">
                     <Button
-                      variant={
-                        p.stock < settings.lowStock ? "warning" : "secondary"
-                      }
+                      variant="primary"
                       size="sm"
                       onClick={() => setRestockModal(p)}
                     >
@@ -3133,7 +3275,9 @@ export default function ShopSmartUltimate() {
                   >
                     Cancel
                   </Button>
-                  <Button onClick={handleRestock}>Confirm Restock</Button>
+                  <Button variant="primary" onClick={handleRestock}>
+                    Confirm Restock
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -3149,6 +3293,7 @@ export default function ShopSmartUltimate() {
   /**
    * === VIEW: CUSTOMERS / CRM & LOYALTY (START) ===
    * Purpose: manage customer profiles, loyalty points, and AI-driven segment insights.
+   * Contributor: Team Member 5 - CRM & Customer Analytics
    */
   const CustomersView = () => {
     const [isAddMode, setIsAddMode] = useState(false);
@@ -3156,6 +3301,8 @@ export default function ShopSmartUltimate() {
     const [analyzing, setAnalyzing] = useState(null);
     const [customerInsights, setCustomerInsights] = useState({});
     const [selectedCustomer, setSelectedCustomer] = useState(null);
+    const [showInsightModal, setShowInsightModal] = useState(false);
+    const [currentInsight, setCurrentInsight] = useState(null);
 
     const handleAddCustomer = () => {
       const customer = {
@@ -3178,10 +3325,17 @@ export default function ShopSmartUltimate() {
     const handleAnalyze = async (customer) => {
       setAnalyzing(customer.id);
       try {
-        const insights = await EnhancedAIService.analyzeCustomerSegment(
-          customer
-        );
-        setCustomerInsights((prev) => ({ ...prev, [customer.id]: insights }));
+        const result = await EnhancedAIService.analyzeCustomerSegment(customer);
+        setCustomerInsights((prev) => ({ ...prev, [customer.id]: result }));
+
+        // Show detailed insights in modal
+        setCurrentInsight({
+          customer: customer,
+          insights: result.insights,
+          summary: result.summary,
+        });
+        setShowInsightModal(true);
+
         addNotification(
           `AI insights generated for ${customer.name}`,
           "success"
@@ -3220,7 +3374,7 @@ export default function ShopSmartUltimate() {
           </div>
           <div className="flex gap-3">
             <Button
-              variant="secondary"
+              variant="primary"
               icon={Filter}
               onClick={() =>
                 addNotification("Advanced filtering coming soon", "info")
@@ -3228,7 +3382,11 @@ export default function ShopSmartUltimate() {
             >
               Filter
             </Button>
-            <Button icon={UserPlus} onClick={() => setIsAddMode(true)}>
+            <Button
+              variant="primary"
+              icon={UserPlus}
+              onClick={() => setIsAddMode(true)}
+            >
               Add Customer
             </Button>
           </div>
@@ -3249,10 +3407,10 @@ export default function ShopSmartUltimate() {
                   className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg
                   ${
                     c.segment === "VIP"
-                      ? "bg-gradient-to-r from-purple-500 to-indigo-500"
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-500"
                       : c.segment === "Regular"
                       ? "bg-gradient-to-r from-blue-500 to-cyan-500"
-                      : "bg-gradient-to-r from-slate-500 to-slate-600"
+                      : "bg-gradient-to-r from-blue-400 to-blue-500"
                   }`}
                 >
                   {c.name.charAt(0)}
@@ -3316,29 +3474,36 @@ export default function ShopSmartUltimate() {
 
               {customerInsights[c.id] && (
                 <div
-                  className={`p-3 rounded-lg mb-3 ${
+                  className={`p-3 rounded-lg mb-3 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors ${
                     darkMode ? "bg-slate-800/50" : "bg-blue-50"
                   }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentInsight({
+                      customer: c,
+                      insights: customerInsights[c.id].insights,
+                      summary: customerInsights[c.id].summary,
+                    });
+                    setShowInsightModal(true);
+                  }}
                 >
                   <p className="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1">
-                    AI Insights
+                    AI Insights Available
                   </p>
-                  {customerInsights[c.id].map((insight, idx) => (
-                    <div key={idx} className="text-xs">
-                      <p className="font-medium">{insight.segment}</p>
-                      <p className="text-slate-600 dark:text-slate-400">
-                        {insight.recommendation}
-                      </p>
-                    </div>
-                  ))}
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    Click to view detailed customer analysis
+                  </p>
                 </div>
               )}
 
               <div className="flex gap-2">
                 <Button
-                  variant="secondary"
+                  variant="primary"
                   className="flex-1 text-xs"
-                  onClick={() => handleAnalyze(c)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAnalyze(c);
+                  }}
                   disabled={analyzing === c.id}
                 >
                   {analyzing === c.id ? (
@@ -3353,7 +3518,10 @@ export default function ShopSmartUltimate() {
                   <Button
                     variant="warning"
                     size="sm"
-                    onClick={() => handleSendOffer(c, "vip")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSendOffer(c, "vip");
+                    }}
                     icon={Star}
                   >
                     VIP Offer
@@ -3449,7 +3617,7 @@ export default function ShopSmartUltimate() {
                 </h4>
                 <div className="flex gap-3">
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     onClick={() =>
                       handleSendOffer(selectedCustomer, "discount")
                     }
@@ -3457,12 +3625,13 @@ export default function ShopSmartUltimate() {
                     Send Discount
                   </Button>
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     onClick={() => handleSendOffer(selectedCustomer, "loyalty")}
                   >
                     Loyalty Program
                   </Button>
                   <Button
+                    variant="primary"
                     onClick={() => {
                       setActiveCustomer(selectedCustomer);
                       setCurrentView("pos");
@@ -3546,8 +3715,168 @@ export default function ShopSmartUltimate() {
                   >
                     Cancel
                   </Button>
-                  <Button onClick={handleAddCustomer}>Create Profile</Button>
+                  <Button variant="primary" onClick={handleAddCustomer}>
+                    Create Profile
+                  </Button>
                 </div>
+              </div>
+            </Card>
+          </div>
+        )}
+
+        {/* AI Insight Modal */}
+        {showInsightModal && currentInsight && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card
+              isDark={darkMode}
+              className="w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2
+                    className={`text-xl font-bold ${
+                      darkMode ? "text-white" : "text-slate-900"
+                    }`}
+                  >
+                    AI Customer Insights
+                  </h2>
+                  <p className={darkMode ? "text-slate-400" : "text-slate-500"}>
+                    {currentInsight.customer.name} • {currentInsight.summary}
+                  </p>
+                </div>
+                <button onClick={() => setShowInsightModal(false)}>
+                  <X className="text-slate-400 hover:text-slate-600" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto space-y-6">
+                {currentInsight.insights.map((insight, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-4 rounded-xl ${
+                      darkMode ? "bg-slate-800/50" : "bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-3">
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          insight.priority === "high"
+                            ? "bg-rose-100 text-rose-600"
+                            : insight.priority === "medium"
+                            ? "bg-amber-100 text-amber-600"
+                            : "bg-blue-100 text-blue-600"
+                        }`}
+                      >
+                        {insight.priority === "high"
+                          ? "🔥"
+                          : insight.priority === "medium"
+                          ? "⚡"
+                          : "💡"}
+                      </div>
+                      <h3 className="font-bold text-lg">{insight.segment}</h3>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-slate-500 mb-1">
+                          AI Recommendation
+                        </p>
+                        <p className="font-medium">{insight.recommendation}</p>
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-medium text-slate-500 mb-1">
+                          Action Item
+                        </p>
+                        <div
+                          className={`p-3 rounded-lg ${
+                            darkMode ? "bg-blue-900/20" : "bg-blue-50"
+                          }`}
+                        >
+                          <p>{insight.action}</p>
+                        </div>
+                      </div>
+
+                      {insight.metrics && (
+                        <div className="grid grid-cols-3 gap-2">
+                          <div
+                            className={`p-2 rounded text-center ${
+                              darkMode ? "bg-slate-800" : "bg-white"
+                            }`}
+                          >
+                            <p className="text-xs text-slate-500">
+                              Purchase Frequency
+                            </p>
+                            <p className="font-bold">
+                              {insight.metrics.purchaseFrequency}
+                            </p>
+                          </div>
+                          <div
+                            className={`p-2 rounded text-center ${
+                              darkMode ? "bg-slate-800" : "bg-white"
+                            }`}
+                          >
+                            <p className="text-xs text-slate-500">
+                              Avg Order Value
+                            </p>
+                            <p className="font-bold">
+                              {insight.metrics.avgOrderValue}
+                            </p>
+                          </div>
+                          <div
+                            className={`p-2 rounded text-center ${
+                              darkMode ? "bg-slate-800" : "bg-white"
+                            }`}
+                          >
+                            <p className="text-xs text-slate-500">
+                              Retention Rate
+                            </p>
+                            <p className="font-bold">
+                              {insight.metrics.retentionRate}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {insight.personalized && (
+                        <div
+                          className={`p-3 rounded-lg ${
+                            darkMode ? "bg-purple-900/20" : "bg-purple-50"
+                          }`}
+                        >
+                          <p className="text-sm font-medium text-purple-600 dark:text-purple-400 mb-1">
+                            Personalized Recommendations
+                          </p>
+                          <p className="text-sm">{insight.personalized}</p>
+                        </div>
+                      )}
+
+                      {insight.nextBestAction && (
+                        <div
+                          className={`p-3 rounded-lg border ${
+                            darkMode
+                              ? "border-emerald-700 bg-emerald-900/10"
+                              : "border-emerald-200 bg-emerald-50"
+                          }`}
+                        >
+                          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-1">
+                            Next Best Action
+                          </p>
+                          <p className="font-medium">
+                            {insight.nextBestAction}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                <Button
+                  variant="primary"
+                  onClick={() => setShowInsightModal(false)}
+                >
+                  Close Insights
+                </Button>
               </div>
             </Card>
           </div>
@@ -3562,6 +3891,7 @@ export default function ShopSmartUltimate() {
   /**
    * === VIEW: SETTINGS & SYSTEM CONFIGURATION (START) ===
    * Purpose: tweak store settings, export audit logs, and manage appearance/AI options.
+   * Contributor: Team Member 4 - System Configuration & Admin Panel
    */
   const SettingsView = () => {
     const [activeTab, setActiveTab] = useState("general");
@@ -3718,9 +4048,7 @@ export default function ShopSmartUltimate() {
                       }))
                     }
                     className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${
-                      localSettings.autoRestock
-                        ? "bg-emerald-600"
-                        : "bg-slate-300"
+                      localSettings.autoRestock ? "bg-blue-600" : "bg-slate-300"
                     }`}
                   >
                     <span
@@ -3733,7 +4061,7 @@ export default function ShopSmartUltimate() {
                   </button>
                 </div>
                 <div className="flex justify-end pt-4">
-                  <Button onClick={handleSave} icon={Save}>
+                  <Button variant="primary" onClick={handleSave} icon={Save}>
                     Save Changes
                   </Button>
                 </div>
@@ -3760,7 +4088,7 @@ export default function ShopSmartUltimate() {
                     }`}
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      <BrainCircuit className="text-purple-500" />
+                      <BrainCircuit className="text-blue-500" />
                       <p className="font-bold">AI Assistant</p>
                     </div>
                     <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
@@ -3775,9 +4103,7 @@ export default function ShopSmartUltimate() {
                         }))
                       }
                       className={`w-12 h-6 rounded-full transition-colors relative flex items-center ${
-                        localSettings.enableAI
-                          ? "bg-purple-600"
-                          : "bg-slate-300"
+                        localSettings.enableAI ? "bg-blue-600" : "bg-slate-300"
                       }`}
                     >
                       <span
@@ -3855,7 +4181,7 @@ export default function ShopSmartUltimate() {
                     System Audit Logs
                   </h3>
                   <Button
-                    variant="secondary"
+                    variant="primary"
                     icon={Download}
                     onClick={handleExportLogs}
                   >
@@ -3904,11 +4230,11 @@ export default function ShopSmartUltimate() {
                             <span
                               className={`font-semibold ${
                                 log.role === "admin"
-                                  ? "text-purple-500"
+                                  ? "text-blue-600"
                                   : log.role === "manager"
-                                  ? "text-emerald-500"
+                                  ? "text-blue-500"
                                   : log.role === "cashier"
-                                  ? "text-orange-500"
+                                  ? "text-blue-400"
                                   : "text-blue-500"
                               }`}
                             >
@@ -3991,28 +4317,28 @@ export default function ShopSmartUltimate() {
         label: "Dashboard",
         icon: LayoutDashboard,
         roles: [ROLES.ADMIN, ROLES.MANAGER],
-        color: "from-blue-500 to-cyan-500",
+        color: "from-blue-500 to-blue-600",
       },
       {
         id: "pos",
         label: "Point of Sale",
         icon: ScanLine,
         roles: [ROLES.ADMIN, ROLES.CASHIER, ROLES.MANAGER],
-        color: "from-emerald-500 to-green-500",
+        color: "from-blue-500 to-blue-600",
       },
       {
         id: "products",
         label: "Products",
         icon: Package,
         roles: [ROLES.ADMIN, ROLES.MANAGER],
-        color: "from-purple-500 to-indigo-500",
+        color: "from-blue-500 to-blue-600",
       },
       {
         id: "inventory",
         label: "Inventory",
         icon: BarChart3,
         roles: [ROLES.ADMIN, ROLES.MANAGER],
-        color: "from-amber-500 to-orange-500",
+        color: "from-blue-500 to-blue-600",
       },
     ];
 
@@ -4024,14 +4350,14 @@ export default function ShopSmartUltimate() {
           label: "CRM",
           icon: Users,
           roles: [ROLES.ADMIN],
-          color: "from-pink-500 to-rose-500",
+          color: "from-blue-500 to-blue-600",
         },
         {
           id: "settings",
           label: "Settings",
           icon: Settings,
           roles: [ROLES.ADMIN],
-          color: "from-slate-500 to-slate-700",
+          color: "from-blue-500 to-blue-600",
         }
       );
     }
@@ -4043,7 +4369,7 @@ export default function ShopSmartUltimate() {
         label: "Reports",
         icon: FileText,
         roles: [ROLES.MANAGER],
-        color: "from-indigo-500 to-purple-500",
+        color: "from-blue-500 to-blue-600",
       });
     }
 
@@ -4072,13 +4398,7 @@ export default function ShopSmartUltimate() {
       >
         <div className="h-20 flex items-center px-6 border-b border-transparent">
           <div
-            className={`w-10 h-10 bg-gradient-to-br ${
-              user.role === ROLES.ADMIN
-                ? "from-purple-600 to-indigo-600"
-                : user.role === ROLES.MANAGER
-                ? "from-emerald-600 to-green-600"
-                : "from-orange-600 to-red-600"
-            } rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20`}
+            className={`w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/20`}
           >
             {user.role === ROLES.ADMIN ? (
               <Settings size={22} />
@@ -4189,7 +4509,7 @@ export default function ShopSmartUltimate() {
                 onClick={() => setAIChatOpen(!isAIChatOpen)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all ${
                   isAIChatOpen
-                    ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-transparent"
+                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white border-transparent"
                     : darkMode
                     ? "bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700"
                     : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
@@ -4208,13 +4528,7 @@ export default function ShopSmartUltimate() {
               }`}
             >
               <div
-                className={`w-8 h-8 rounded-full bg-gradient-to-r flex items-center justify-center text-white font-bold text-sm ${
-                  user.role === ROLES.ADMIN
-                    ? "from-purple-500 to-indigo-500"
-                    : user.role === ROLES.MANAGER
-                    ? "from-emerald-500 to-green-500"
-                    : "from-orange-500 to-red-500"
-                }`}
+                className={`w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm`}
               >
                 {user.avatar}
               </div>
@@ -4226,15 +4540,7 @@ export default function ShopSmartUltimate() {
                 >
                   {user.name}
                 </p>
-                <p
-                  className={`text-xs uppercase font-semibold ${
-                    user.role === ROLES.ADMIN
-                      ? "text-purple-500"
-                      : user.role === ROLES.MANAGER
-                      ? "text-emerald-500"
-                      : "text-orange-500"
-                  }`}
-                >
+                <p className={`text-xs uppercase font-semibold text-blue-500`}>
                   {user.role}
                 </p>
               </div>
@@ -4259,12 +4565,12 @@ export default function ShopSmartUltimate() {
                   : "bg-white border-slate-200"
               }`}
             >
-              <div className="p-4 border-b border-indigo-500/30 flex justify-between items-center bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+              <div className="p-4 border-b border-blue-500/30 flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                 <div className="flex items-center gap-2">
                   <Sparkles size={18} />
                   <h3 className="font-bold">AI Assistant</h3>
                   <Badge variant="success" className="!text-xs !py-0.5">
-                    Live
+                    {user.role} Mode
                   </Badge>
                 </div>
                 <button
@@ -4279,7 +4585,7 @@ export default function ShopSmartUltimate() {
                   darkMode ? "bg-slate-900" : "bg-slate-50"
                 }`}
               >
-                {aiMessages.map((msg, i) => (
+                {getCurrentAiChat().map((msg, i) => (
                   <div
                     key={i}
                     className={`flex ${
@@ -4289,7 +4595,7 @@ export default function ShopSmartUltimate() {
                     <div
                       className={`max-w-[85%] p-3 rounded-xl text-sm ${
                         msg.role === "user"
-                          ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-br-none"
+                          ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-none"
                           : darkMode
                           ? "bg-slate-800 border border-slate-700 text-slate-200 rounded-bl-none"
                           : "bg-white border border-slate-200 text-slate-700 rounded-bl-none shadow-sm"
@@ -4327,17 +4633,23 @@ export default function ShopSmartUltimate() {
                   <input
                     value={aiInput}
                     onChange={(e) => setAiInput(e.target.value)}
-                    placeholder="Ask about sales, stock, customers..."
+                    placeholder={`Ask about ${
+                      user.role === "admin"
+                        ? "sales, stock, customers, settings"
+                        : user.role === "manager"
+                        ? "sales, inventory, products"
+                        : "product info, prices"
+                    }`}
                     className={`w-full pl-4 pr-10 py-3 rounded-xl border outline-none text-sm ${
                       darkMode
-                        ? "bg-slate-800 border-slate-700 text-white focus:border-indigo-500"
-                        : "bg-slate-50 border-slate-200 focus:ring-2 focus:ring-indigo-500"
+                        ? "bg-slate-800 border-slate-700 text-white focus:border-blue-500"
+                        : "bg-slate-50 border-slate-200 focus:ring-2 focus:ring-blue-500"
                     }`}
                   />
                   <button
                     type="submit"
                     disabled={!aiInput.trim() || aiTyping}
-                    className="absolute right-2 top-2 p-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
+                    className="absolute right-2 top-2 p-1.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:opacity-90 disabled:opacity-50 transition-all"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -4374,7 +4686,7 @@ export default function ShopSmartUltimate() {
           )}
         </div>
 
-        {/* RECEIPT MODAL - Fixed close button */}
+        {/* RECEIPT MODAL */}
         {showReceipt && lastOrder && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div className="bg-white w-full max-w-md shadow-2xl rounded-lg overflow-hidden flex flex-col max-h-[90vh] print:hidden">
@@ -4519,13 +4831,14 @@ export default function ShopSmartUltimate() {
 
               <div className="p-4 bg-slate-50 border-t border-slate-200 flex gap-3">
                 <Button
-                  variant="ghost"
+                  variant="primary"
                   className="flex-1"
                   onClick={() => setShowReceipt(false)}
                 >
                   Close
                 </Button>
                 <Button
+                  variant="primary"
                   className="flex-1 bg-slate-800 hover:bg-slate-900"
                   icon={Printer}
                   onClick={() => {
