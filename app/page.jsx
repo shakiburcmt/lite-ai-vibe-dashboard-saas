@@ -1,6 +1,5 @@
-// === ENTRY POINT: mark this file as a client-side React component for Next.js ===
 "use client";
-// === ICONS & CHART LIBRARIES (used across all views) ===
+
 import {
   AlertTriangle,
   BarChart3,
@@ -58,16 +57,8 @@ import {
   YAxis,
 } from "recharts";
 
-/**
- * === SECTION: MOCK DATA & APP-WIDE CONSTANTS (START) ===
- * Purpose: central place for roles, themes, seed data, and chart demo data.
- * Contributor: Team Member 1 - Database Schema Design
- */
-
-// Basic role identifiers used for access control and default views
 const ROLES = { ADMIN: "admin", MANAGER: "manager", CASHIER: "cashier" };
 
-// Tailwind class presets for light/dark "glass" style cards
 const THEMES = {
   LIGHT: "bg-slate-50 text-slate-900",
   DARK: "bg-slate-900 text-slate-100",
@@ -76,7 +67,6 @@ const THEMES = {
     "bg-slate-800/70 backdrop-blur-xl border-slate-700/50 shadow-xl text-white",
 };
 
-// Users you can quickly "log in" as (no real auth, just local simulation)
 const INITIAL_USERS = [
   {
     id: 1,
@@ -104,7 +94,6 @@ const INITIAL_USERS = [
   },
 ];
 
-// Real product images from Unsplash for POS view
 const PRODUCT_IMAGES = {
   "Organic Coffee Beans":
     "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=400&h=300&q=80",
@@ -120,7 +109,6 @@ const PRODUCT_IMAGES = {
     "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?auto=format&fit=crop&w=400&h=300&q=80",
 };
 
-// Initial catalog of products used by POS, inventory, reports, etc.
 const INITIAL_PRODUCTS = [
   {
     id: 101,
@@ -208,7 +196,6 @@ const INITIAL_PRODUCTS = [
   },
 ];
 
-// Example customers used for CRM, loyalty, and AI insights
 const INITIAL_CUSTOMERS = [
   {
     id: 1,
@@ -260,7 +247,6 @@ const INITIAL_CUSTOMERS = [
   },
 ];
 
-// Fake sales series used to demonstrate the analytics dashboard
 const SALES_DATA_7DAYS = [
   { name: "Mon", sales: 4000, orders: 24, customers: 18 },
   { name: "Tue", sales: 3000, orders: 18, customers: 15 },
@@ -293,7 +279,6 @@ const SALES_DATA_12MONTHS = [
   { name: "Dec", sales: 150000, orders: 950, customers: 750 },
 ];
 
-// Base palette per category; used when we compute category distribution from live products
 const CATEGORY_COLORS = {
   Electronics: "#8884d8",
   Beverages: "#82ca9d",
@@ -305,17 +290,6 @@ const CATEGORY_COLORS = {
   Other: "#64748b",
 };
 
-/**
- * === SECTION: MOCK DATA & APP-WIDE CONSTANTS (END) ===
- */
-
-/**
- * === SECTION: ENHANCED AI SERVICES (START) ===
- * Purpose: fake "AI" helpers that simulate latency and return smart-looking text.
- * Contributor: Team Member 2 - AI Integration & Analytics
- */
-
-// Shared money formatter so all views show consistent currency strings
 const formatCurrency = (amount, currency = "$") =>
   `${currency}${amount.toFixed(2)}`;
 
@@ -324,7 +298,6 @@ class EnhancedAIService {
     await new Promise((r) => setTimeout(r, 800));
     const lowerName = productName.toLowerCase();
 
-    // Library of richer, human-friendly descriptions keyed by simple patterns
     const productPatterns = [
       {
         match: /apple|banana|orange|mango|grape|fruit/,
@@ -376,21 +349,16 @@ class EnhancedAIService {
       bakery: `${productName} delivers a soft, bakery-fresh experience with a focus on flavor and texture. Perfect for breakfast, snacks, or pairing with hot drinks.`,
       groceries: `${productName} is a core grocery item that supports simple, reliable meals. It is chosen for stable quality, so weekly shopping stays predictable for families.`,
       default: `High-quality ${productName} designed for durability and ease of use. Suitable for daily life in both home and small business environments.`,
-    } as const;
+    };
 
-    // First try to match by product keywords
     for (const pattern of productPatterns) {
       if (pattern.match.test(lowerName)) {
         return pattern.text;
       }
     }
 
-    // Then fall back to category-based description
-    return (
-      categoryDescriptions[
-        category?.toLowerCase() as keyof typeof categoryDescriptions
-      ] ?? categoryDescriptions.default
-    );
+    const categoryKey = category?.toLowerCase();
+    return categoryDescriptions[categoryKey] || categoryDescriptions.default;
   }
 
   static async predictCategory(productName) {
@@ -418,7 +386,6 @@ class EnhancedAIService {
   static async analyzeCustomerSegment(customer) {
     await new Promise((r) => setTimeout(r, 700));
 
-    // Enhanced AI insights with actionable recommendations
     const insights = [];
     let summary = "";
 
@@ -466,7 +433,6 @@ class EnhancedAIService {
       });
     }
 
-    // Add personalized recommendations based on preferences
     if (customer.preferences && customer.preferences.length > 0) {
       insights[0].personalized = `Based on interest in ${customer.preferences.join(
         ", "
@@ -476,7 +442,6 @@ class EnhancedAIService {
       );
     }
 
-    // Add next best action
     insights[0].nextBestAction =
       customer.segment === "VIP"
         ? "Invite to exclusive product launch event"
@@ -634,17 +599,6 @@ class EnhancedAIService {
   }
 }
 
-/**
- * === SECTION: ENHANCED AI SERVICES (END) ===
- */
-
-/**
- * === SECTION: REUSABLE UI COMPONENTS (START) ===
- * Purpose: small building blocks (Card, Button, Badge, Input) used in many views.
- * Contributor: Team Member 3 - UI Components & Design System
- */
-
-// Generic "glass" style container used for panels and cards
 const Card = ({ children, className = "", noPadding = false, isDark }) => (
   <div
     className={`rounded-2xl transition-all duration-300 ${
@@ -655,7 +609,6 @@ const Card = ({ children, className = "", noPadding = false, isDark }) => (
   </div>
 );
 
-// Versatile button with consistent primary color throughout the site
 const Button = ({
   children,
   onClick,
@@ -672,7 +625,6 @@ const Button = ({
     lg: "px-6 py-3 text-base",
   };
 
-  // Updated variants with consistent primary color (#3b82f6 - blue-500)
   const variants = {
     primary:
       "bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:shadow-lg hover:shadow-blue-500/30 border border-transparent hover:from-blue-600 hover:to-blue-700",
@@ -701,7 +653,6 @@ const Button = ({
   );
 };
 
-// Tiny label used to highlight statuses (VIP, warning, etc.)
 const Badge = ({ children, variant = "default" }) => {
   const styles = {
     default: "bg-slate-100 text-slate-800 border-slate-200",
@@ -724,7 +675,6 @@ const Badge = ({ children, variant = "default" }) => {
   );
 };
 
-// Text input with optional label and leading icon, tailored for light/dark modes
 const Input = ({ label, icon: Icon, isDark, ...props }) => (
   <div className="flex flex-col gap-1.5 w-full">
     {label && (
@@ -762,24 +712,12 @@ const Input = ({ label, icon: Icon, isDark, ...props }) => (
   </div>
 );
 
-/**
- * === SECTION: REUSABLE UI COMPONENTS (END) ===
- */
-
-/**
- * === SECTION: MAIN APP COMPONENT (START) ===
- * Purpose: holds all global state and decides which high-level view to show.
- * Contributor: Team Member 4 - State Management & Core Logic
- */
-
 export default function ShopSmartUltimate() {
-  // --- GLOBAL STATE ---
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [currentView, setCurrentView] = useState("dashboard");
   const [salesTimeframe, setSalesTimeframe] = useState("7days");
 
-  // --- DATA STATE ---
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
   const [customers, setCustomers] = useState(INITIAL_CUSTOMERS);
   const [orders, setOrders] = useState([]);
@@ -794,19 +732,16 @@ export default function ShopSmartUltimate() {
     loyaltyPointsRate: 1,
   });
 
-  // --- POS STATE ---
   const [cart, setCart] = useState([]);
   const [heldOrders, setHeldOrders] = useState([]);
   const [activeCustomer, setActiveCustomer] = useState(null);
   const [lastOrder, setLastOrder] = useState(null);
 
-  // --- UI STATE ---
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [notifications, setNotifications] = useState([]);
   const [showReceipt, setShowReceipt] = useState(false);
   const [isAIChatOpen, setAIChatOpen] = useState(false);
 
-  // Role-based AI chat state - each role has separate chat history
   const [aiChats, setAiChats] = useState({
     admin: [
       {
@@ -834,11 +769,8 @@ export default function ShopSmartUltimate() {
   const [aiInput, setAiInput] = useState("");
   const [aiTyping, setAiTyping] = useState(false);
   const [showFullReport, setShowFullReport] = useState(false);
-
-  // Optional context for multi-step AI commands (e.g. confirm delete)
   const [aiCommandContext, setAiCommandContext] = useState(null);
 
-  // --- HELPERS ---
   const logAction = (action, details) => {
     const newLog = {
       id: Date.now(),
@@ -862,7 +794,6 @@ export default function ShopSmartUltimate() {
 
   const handleLogin = (selectedUser) => {
     setUser(selectedUser);
-    // Set default view based on role with different options
     if (selectedUser.role === ROLES.CASHIER) {
       setCurrentView("pos");
     } else if (selectedUser.role === ROLES.MANAGER) {
@@ -874,7 +805,6 @@ export default function ShopSmartUltimate() {
     addNotification(`Welcome back, ${selectedUser.name}!`, "success");
   };
 
-  // Get current role-based AI chat
   const getCurrentAiChat = () => {
     return user ? aiChats[user.role] || aiChats.cashier : aiChats.cashier;
   };
@@ -887,12 +817,10 @@ export default function ShopSmartUltimate() {
     }));
   };
 
-  // --- GLOBAL AI CHAT HANDLER ---
   const handleAICommand = async (rawText) => {
     const text = rawText.trim();
     const lower = text.toLowerCase();
 
-    // Simple helper to format product list snippets
     const formatProductList = (list) =>
       list
         .map(
@@ -901,7 +829,6 @@ export default function ShopSmartUltimate() {
         )
         .join("\n");
 
-    // 1) DELETE PRODUCT FLOW
     if (lower === "delete") {
       const sample = products.slice(0, 5);
       if (sample.length === 0) {
@@ -947,7 +874,6 @@ export default function ShopSmartUltimate() {
       return `Done. I deleted "${productToDelete.name}" from your catalog.`;
     }
 
-    // 2) UPDATE STOCK FLOW
     const updateMatch = text.match(/update stock\s+(.+?)\s+to\s+(\d+)\s*$/i);
     if (updateMatch) {
       const namePart = updateMatch[1].trim().toLowerCase();
@@ -983,7 +909,6 @@ export default function ShopSmartUltimate() {
       return `Stock updated. "${productToUpdate.name}" now has stock = ${targetStock}.`;
     }
 
-    // 3) ADD PRODUCT FLOW
     if (lower.startsWith("add product")) {
       const detailsPart = text.replace(/add product/i, "").trim();
       if (!detailsPart) {
@@ -1053,7 +978,6 @@ export default function ShopSmartUltimate() {
       ].join("\n");
     }
 
-    // No command matched → let the analytics assistant handle it instead
     return null;
   };
 
@@ -1069,18 +993,15 @@ export default function ShopSmartUltimate() {
     setAiTyping(true);
 
     try {
-      // Try to interpret the message as a command first
       const commandResponse = await handleAICommand(userMsg.content);
 
       if (commandResponse) {
         const aiResponse = { role: "ai", content: commandResponse };
         setCurrentAiChat([...updatedMessages, aiResponse]);
       } else {
-        // Fallback: analytics / insights assistant with role-based responses
         const vipCount = customers.filter((c) => c.segment === "VIP").length;
         let response = "";
 
-        // Role-specific responses
         if (user.role === ROLES.ADMIN) {
           response = await EnhancedAIService.chatWithAgent(userMsg.content, {
             products,
@@ -1090,7 +1011,6 @@ export default function ShopSmartUltimate() {
             vipCount,
           });
         } else if (user.role === ROLES.MANAGER) {
-          // Manager has limited access
           if (
             userMsg.content.toLowerCase().includes("settings") ||
             userMsg.content.toLowerCase().includes("admin")
@@ -1107,7 +1027,6 @@ export default function ShopSmartUltimate() {
             });
           }
         } else {
-          // Cashier has basic access only
           if (
             userMsg.content.toLowerCase().includes("sales") ||
             userMsg.content.toLowerCase().includes("inventory") ||
@@ -1135,7 +1054,6 @@ export default function ShopSmartUltimate() {
     }
   };
 
-  // Get sales data based on timeframe
   const getSalesData = () => {
     switch (salesTimeframe) {
       case "30days":
@@ -1147,20 +1065,12 @@ export default function ShopSmartUltimate() {
     }
   };
 
-  // --- VIEW COMPONENTS ---
-  // Each "View" below is a self-contained screen rendered inside the main layout.
-
-  /**
-   * === VIEW: LOGIN (START) ===
-   * Purpose: let the user pick a demo persona (Admin/Manager/Cashier) to "log in" as.
-   */
   const LoginView = () => (
     <div
       className={`min-h-screen flex items-center justify-center relative overflow-hidden ${
         darkMode ? "bg-slate-900" : "bg-slate-100"
       }`}
     >
-      {/* Background effects */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
 
@@ -1247,15 +1157,7 @@ export default function ShopSmartUltimate() {
       </button>
     </div>
   );
-  /**
-   * === VIEW: LOGIN (END) ===
-   */
 
-  /**
-   * === VIEW: POS / POINT OF SALE (START) ===
-   * Purpose: fast cashier workflow for scanning items, holding carts, and checking out.
-   * Contributor: Team Member 5 - POS & Transaction System
-   */
   const POSView = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -1335,7 +1237,7 @@ export default function ShopSmartUltimate() {
         amountPaid,
         change: amountPaid - total,
         date: new Date().toISOString(),
-        cashier: user.name,
+        cashier: user?.name || "Unknown",
         paymentMethod: amountPaid === total ? "Credit Card" : "Cash",
       };
       setOrders((prev) => [newOrder, ...prev]);
@@ -1379,7 +1281,6 @@ export default function ShopSmartUltimate() {
 
     return (
       <div className="flex h-full gap-6 p-6 overflow-hidden">
-        {/* PRODUCTS SIDE */}
         <div className="flex-1 flex flex-col gap-6 overflow-hidden">
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
@@ -1481,7 +1382,6 @@ export default function ShopSmartUltimate() {
           </div>
         </div>
 
-        {/* CART SIDE */}
         <Card
           isDark={darkMode}
           noPadding
@@ -1667,7 +1567,6 @@ export default function ShopSmartUltimate() {
           </div>
         </Card>
 
-        {/* MODALS */}
         {showHeldOrders && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <Card
@@ -1804,20 +1703,11 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
-  /**
-   * === VIEW: POS / POINT OF SALE (END) ===
-   */
 
-  /**
-   * === VIEW: DASHBOARD / ANALYTICS (START) ===
-   * Purpose: visual overview of KPIs with AI-generated forecast and report export.
-   * Contributor: Team Member 2 - Analytics & Reporting
-   */
   const DashboardView = () => {
     const [forecast, setForecast] = useState(null);
     const [loadingForecast, setLoadingForecast] = useState(false);
 
-    // KPI metrics derived from live products & orders
     const totalRevenue7d = products.reduce(
       (sum, p) => sum + p.price * p.salesLast7Days,
       0
@@ -1830,7 +1720,6 @@ export default function ShopSmartUltimate() {
       (p) => p.stock < settings.lowStock
     ).length;
 
-    // Build category distribution from current products so chart stays in sync
     const categoryDistribution = Object.values(
       products.reduce((acc, p) => {
         const cat = p.category || "Other";
@@ -1841,7 +1730,6 @@ export default function ShopSmartUltimate() {
             color: CATEGORY_COLORS[cat] || CATEGORY_COLORS.Other,
           };
         }
-        // Weight by revenue over last 7 days for that category
         acc[cat].value += p.price * p.salesLast7Days;
         return acc;
       }, {})
@@ -2047,7 +1935,10 @@ export default function ShopSmartUltimate() {
                       backgroundColor: darkMode ? "#1e293b" : "#fff",
                       color: darkMode ? "#fff" : "#000",
                     }}
-                    formatter={(value) => [formatCurrency(value), "Sales"]}
+                    formatter={(value) => [
+                      formatCurrency(Number(value)),
+                      "Sales",
+                    ]}
                   />
                   <Area
                     type="monotone"
@@ -2125,7 +2016,6 @@ export default function ShopSmartUltimate() {
           </Card>
         </div>
 
-        {/* Category Distribution Pie Chart (live from products) */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card isDark={darkMode}>
             <h3
@@ -2190,50 +2080,24 @@ export default function ShopSmartUltimate() {
             animate-[softFloat_5s_ease-in-out_infinite]
           "
                   >
-                    {/* LEFT */}
                     <div className="flex items-center gap-3 min-w-0">
-                      <div
-                        className="
-              w-8 h-8 rounded-full
-              bg-blue-600 dark:bg-blue-500
-              text-white text-xs font-bold
-              flex items-center justify-center
-            "
-                      >
+                      <div className="w-8 h-8 rounded-full bg-blue-600 dark:bg-blue-500 text-white text-xs font-bold flex items-center justify-center">
                         #{index + 1}
                       </div>
 
                       <div className="min-w-0">
-                        <p
-                          className="
-                font-semibold text-sm
-                text-slate-900 dark:text-slate-100
-                truncate
-              "
-                        >
+                        <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">
                           {product.name}
                         </p>
-                        <p
-                          className="
-                text-xs
-                text-slate-600 dark:text-slate-400
-                truncate
-              "
-                        >
+                        <p className="text-xs text-slate-600 dark:text-slate-400 truncate">
                           {product.category} • {product.salesLast7Days} sold
                           (7d)
                         </p>
                       </div>
                     </div>
 
-                    {/* RIGHT */}
                     <div className="text-right shrink-0">
-                      <p
-                        className="
-              font-semibold text-sm
-              text-blue-600 dark:text-blue-400
-            "
-                      >
+                      <p className="font-semibold text-sm text-blue-600 dark:text-blue-400">
                         {formatCurrency(
                           product.price * product.salesLast7Days,
                           settings.currency
@@ -2249,7 +2113,6 @@ export default function ShopSmartUltimate() {
           </Card>
         </div>
 
-        {/* Full AI Report Modal */}
         {showFullReport && forecast && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <Card
@@ -2419,29 +2282,13 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
-  /**
-   * === VIEW: DASHBOARD / ANALYTICS (END) ===
-   */
 
-  /**
-   * === VIEW: PRODUCTS / CATALOG MANAGEMENT (START) ===
-   * Purpose: CRUD for products plus AI helpers for description, category, and pricing.
-   * Contributor: Team Member 3 - Product Management System
-   */
   const ProductManagementView = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editForm, setEditForm] = useState({});
     const [generatingDesc, setGeneratingDesc] = useState(false);
     const [predictingCat, setPredictingCat] = useState(false);
-    const [showPriceOptimization, setShowPriceOptimization] = useState<{
-      currentPrice: number;
-      suggestedPrice: number;
-      currentMargin: number;
-      suggestion: string;
-      expectedImpact: string;
-      explanation: string;
-      confidence: number;
-    } | null>(null);
+    const [showPriceOptimization, setShowPriceOptimization] = useState(null);
     const [productSearch, setProductSearch] = useState("");
     const [productCategoryFilter, setProductCategoryFilter] = useState("All");
 
@@ -2449,7 +2296,7 @@ export default function ShopSmartUltimate() {
       setGeneratingDesc(true);
       const desc = await EnhancedAIService.generateProductDescription(
         editForm.name || "New Product",
-        editForm.category
+        editForm.category || null
       );
       setEditForm((prev) => ({ ...prev, description: desc }));
       setGeneratingDesc(false);
@@ -2498,7 +2345,7 @@ export default function ShopSmartUltimate() {
           price,
           stock,
           cost,
-          profitMargin: (((price - cost) / price) * 100).toFixed(1),
+          profitMargin: ((price - cost) / price) * 100,
           reorderPoint: 10,
           supplier: "Default Supplier",
         };
@@ -2953,18 +2800,10 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
-  /**
-   * === VIEW: PRODUCTS / CATALOG MANAGEMENT (END) ===
-   */
 
-  /**
-   * === VIEW: INVENTORY HEALTH & RESTOCKING (START) ===
-   * Purpose: monitor low stock, restock items, and export inventory reports.
-   * Contributor: Team Member 1 - Inventory Management System
-   */
   const InventoryView = () => {
     const [restockModal, setRestockModal] = useState(null);
-    const [amount, setAmount] = useState(10);
+    const [amount, setAmount] = useState("10");
     const lowStockCount = products.filter(
       (p) => p.stock < settings.lowStock
     ).length;
@@ -3286,15 +3125,7 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
-  /**
-   * === VIEW: INVENTORY HEALTH & RESTOCKING (END) ===
-   */
 
-  /**
-   * === VIEW: CUSTOMERS / CRM & LOYALTY (START) ===
-   * Purpose: manage customer profiles, loyalty points, and AI-driven segment insights.
-   * Contributor: Team Member 5 - CRM & Customer Analytics
-   */
   const CustomersView = () => {
     const [isAddMode, setIsAddMode] = useState(false);
     const [newCustomer, setNewCustomer] = useState({});
@@ -3313,6 +3144,7 @@ export default function ShopSmartUltimate() {
         segment: newCustomer.segment || "New",
         totalSpent: 0,
         visitCount: 1,
+        preferences: newCustomer.preferences || [],
       };
       setCustomers((prev) => [...prev, customer]);
       addNotification("Customer profile created.", "success");
@@ -3328,7 +3160,6 @@ export default function ShopSmartUltimate() {
         const result = await EnhancedAIService.analyzeCustomerSegment(customer);
         setCustomerInsights((prev) => ({ ...prev, [customer.id]: result }));
 
-        // Show detailed insights in modal
         setCurrentInsight({
           customer: customer,
           insights: result.insights,
@@ -3724,7 +3555,6 @@ export default function ShopSmartUltimate() {
           </div>
         )}
 
-        {/* AI Insight Modal */}
         {showInsightModal && currentInsight && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <Card
@@ -3884,15 +3714,7 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
-  /**
-   * === VIEW: CUSTOMERS / CRM & LOYALTY (END) ===
-   */
 
-  /**
-   * === VIEW: SETTINGS & SYSTEM CONFIGURATION (START) ===
-   * Purpose: tweak store settings, export audit logs, and manage appearance/AI options.
-   * Contributor: Team Member 4 - System Configuration & Admin Panel
-   */
   const SettingsView = () => {
     const [activeTab, setActiveTab] = useState("general");
     const [localSettings, setLocalSettings] = useState(settings);
@@ -4305,11 +4127,7 @@ export default function ShopSmartUltimate() {
       </div>
     );
   };
-  /**
-   * === VIEW: SETTINGS & SYSTEM CONFIGURATION (END) ===
-   */
 
-  // Role-based navigation configuration for the left sidebar
   const getNavigationItems = () => {
     const baseItems = [
       {
@@ -4342,7 +4160,6 @@ export default function ShopSmartUltimate() {
       },
     ];
 
-    // Admin only items
     if (user.role === ROLES.ADMIN) {
       baseItems.push(
         {
@@ -4362,7 +4179,6 @@ export default function ShopSmartUltimate() {
       );
     }
 
-    // Manager specific items (different from admin)
     if (user.role === ROLES.MANAGER) {
       baseItems.push({
         id: "reports",
@@ -4376,17 +4192,14 @@ export default function ShopSmartUltimate() {
     return baseItems;
   };
 
-  // If no user is selected yet, show the login personas instead of the app shell
   if (!user) return <LoginView />;
 
-  // Main authenticated layout: sidebar navigation + header + active view + AI chat
   return (
     <div
       className={`flex h-screen overflow-hidden font-sans transition-colors duration-300 ${
         darkMode ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
       }`}
     >
-      {/* SIDEBAR */}
       <aside
         className={`transition-all duration-300 z-20 flex flex-col border-r shadow-xl ${
           isSidebarOpen ? "w-64" : "w-20"
@@ -4469,7 +4282,6 @@ export default function ShopSmartUltimate() {
         </div>
       </aside>
 
-      {/* MAIN CONTENT WRAPPER */}
       <main className="flex-1 flex flex-col min-w-0 relative">
         <header
           className={`h-20 flex items-center justify-between px-8 z-10 border-b ${
@@ -4556,7 +4368,6 @@ export default function ShopSmartUltimate() {
           {currentView === "customers" && <CustomersView />}
           {currentView === "settings" && <SettingsView />}
 
-          {/* AI CHAT SIDEBAR */}
           {isAIChatOpen && (
             <div
               className={`absolute right-0 top-0 bottom-0 w-96 shadow-2xl border-l flex flex-col z-30 animate-in slide-in-from-right duration-300 ${
@@ -4686,7 +4497,6 @@ export default function ShopSmartUltimate() {
           )}
         </div>
 
-        {/* RECEIPT MODAL */}
         {showReceipt && lastOrder && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
             <div className="bg-white w-full max-w-md shadow-2xl rounded-lg overflow-hidden flex flex-col max-h-[90vh] print:hidden">
@@ -4722,7 +4532,6 @@ export default function ShopSmartUltimate() {
                 </div>
 
                 <div className="space-y-6">
-                  {/* Order Info */}
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-slate-500 text-xs uppercase tracking-wider">
@@ -4749,7 +4558,6 @@ export default function ShopSmartUltimate() {
                     </div>
                   </div>
 
-                  {/* Items Table */}
                   <div className="border border-slate-200 rounded-lg overflow-hidden">
                     <div className="bg-slate-50 p-3 grid grid-cols-12 text-xs font-medium text-slate-700 uppercase tracking-wider">
                       <div className="col-span-7">Description</div>
@@ -4776,7 +4584,6 @@ export default function ShopSmartUltimate() {
                     </div>
                   </div>
 
-                  {/* Totals */}
                   <div className="border-t border-slate-200 pt-4 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Subtotal</span>
@@ -4798,7 +4605,6 @@ export default function ShopSmartUltimate() {
                     </div>
                   </div>
 
-                  {/* Payment Method */}
                   <div className="bg-slate-50 p-4 rounded-lg">
                     <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">
                       Payment Method
@@ -4812,7 +4618,6 @@ export default function ShopSmartUltimate() {
                     </p>
                   </div>
 
-                  {/* Footer */}
                   <div className="text-center pt-4 border-t border-slate-200">
                     <p className="text-xs text-slate-500 mb-2">
                       Thank you for your purchase!
@@ -5107,7 +4912,6 @@ export default function ShopSmartUltimate() {
           </div>
         )}
 
-        {/* NOTIFICATIONS */}
         <div className="absolute bottom-8 right-8 flex flex-col gap-3 z-50 pointer-events-none">
           {notifications.map((n) => (
             <div
